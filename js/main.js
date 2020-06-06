@@ -1,102 +1,76 @@
 'use strict';
 
-var advert = {
-  OFFER: {
-    TITLE: [
-      'Заголовок 1',
-      'Заголовок 2',
-      'Заголовок 3'
-    ],
-    ADDRESS: [
-      '600, 350',
-      '700, 450',
-      '500, 250',
-      '800, 350',
-      //Правильно ли задано?
-    ],
-    PRICE: [
-      100,
-      200,
-      300,
-      400
-    ],
-    TYPE: [
-      'palace',
-      'flat ',
-      'house',
-      'bungalo'
-    ],
-    ROOMS: [
-      1,
-      2
-    ],
-    GUESTS: [
-      1,
-      2,
-      3,
-      4
-    ],
-    CHECKIN: [
-      '12:00',
-      '13:00',
-      '14:00'
-    ],
-    CHECKOUT: [
-      '12:00',
-      '13:00',
-      '14:00'
-    ],
-    FEATURES: [
-      'wifi',
-      'dishwasher',
-      'parking',
-      'washer',
-      'elevator',
-      'conditioner'
-    ],
-    DESCRIPTION: [
-      'Описание'
-    ],
-  },
-  LOCATION: {
-    //Как задать?
-  }
-};
+var TITLE = ['Заголовок 1', 'Заголовок 2', 'Заголовок 3'];
+var PRICE = [100, 200, 300, 400];
+var TYPE = ['palace', 'flat', 'house', 'bungalo'];
+var ROOMS = [1, 2, 3];
+var GUESTS = [1, 2, 3, 4];
+var CHECKIN = ['12:00', '13:00', '14:00'];
+var CHECKOUT = ['12:00', '13:00', '14:00'];
+var FEATURES = ['wifi','dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var DESCRIPTION = ['Описание 1', 'Описание 2', 'Описание 3'];
+var PHOTOS = [
+  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
+];
 
-// Шаг 1. Функция создания массива объявлений
-
-// Вспомогательная функция нахождения случайного числа,
-// для последующей генерации составных частей объявления
-var getRandomItem = function (arr) {
-  return Math.floor(Math.random() * arr.length);
+// Вспомогательная функция, создающая аватар
+var getRandomAvatar = function (index) {
+  return 'img/avatars/user0' + (index + 1) + '.png';
 }
 
+//Вспомогательная функция, возвращающая случайный элемент из массива
+var getRandomValueFromArr = function (arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+// Вспомогательная функция, возвращающая случайное число из заданного диапазона
+var getRandomValueFromRange = function (min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+// Вспомогательная функция, создающая массив строк
+var getRandomStringsArr = function (arr, min, max) {
+  var newStringsArr = arr.slice();
+  newStringsArr.length = getRandomValueFromRange(min, max);
+  return newStringsArr;
+};
+
+var locationX = getRandomValueFromRange(300, 900);
+var locationY = getRandomValueFromRange(130, 630);
+
+// Шаг 1. Создание массива объявлений
+
+// Функция, создающая одно объявление
 var createRandomAdvert = function (count) {
   var randomAdvert = {
     author: {
-      avatar: 'img/avatars/user0' + (count + 1) + '.png',
+      avatar: getRandomAvatar(count),
     },
     offer: {
-      title: getRandomItem(advert.OFFER.TITLE),
-      address: getRandomItem(advert.OFFER.ADDRESS),
-      price: getRandomItem(advert.OFFER.PRICE),
-      type: getRandomItem(advert.OFFER.TYPE),
-      rooms: getRandomItem(advert.OFFER.ROOMS),
-      guests: getRandomItem(advert.OFFER.GUESTS),
-      checkin: getRandomItem(advert.OFFER.CHECKIN),
-      checkout: getRandomItem(advert.OFFER.CHECKOUT),
-      features: getRandomItem(advert.OFFER.FEATURES),
-      description: getRandomItem(advert.OFFER.DESCRIPTION),
-      photos: 'http://o0.github.io/assets/images/tokyo/hotel' + (count + 1) + '.jpg'
+      title: getRandomValueFromArr(TITLE),
+      address: locationX + ', ' + locationY,
+      price: getRandomValueFromArr(PRICE),
+      type: getRandomValueFromArr(TYPE),
+      rooms: getRandomValueFromArr(ROOMS),
+      guests: getRandomValueFromArr(GUESTS),
+      checkin: getRandomValueFromArr(CHECKIN),
+      checkout: getRandomValueFromArr(CHECKOUT),
+      features: getRandomStringsArr(FEATURES, 1, 6),
+      description: getRandomValueFromArr(DESCRIPTION),
+      photos: getRandomStringsArr(PHOTOS, 1, 5)
     },
     location: {
-      //Как описать?
+      x: locationX,
+      y: locationY,
     }
   };
 
   return randomAdvert;
 }
 
+// Функция, создающая массив объявлений (в колличестве равном count)
 var createAdvertsList = function (count) {
   var list = [];
   for (var i = 0; i < count; i++) {
@@ -104,7 +78,7 @@ var createAdvertsList = function (count) {
   }
   return list;
 }
-
+// console.log(createAdvertsList(8))
 
 // Шаг 2. Переключение карты из неактивного состояния в активное
 var map = document.querySelector('.map');
@@ -116,17 +90,17 @@ var mapPinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-var createPin = function (advert) {
+var createPin = function () {
   var pinItem = mapPinTemplate.cloneNode(true);
-  pinItem.style = 'left: ' + advert.location.x + 'px; top: ' + advert.location.y + 'px;';
-  pinItem.querySelector('img').src = advert.author.avatar;
-  pinItem.querySelector('img').alt = advert.offer.title;
+  pinItem.style = 'left: ' + createRandomAdvert(i).location.x + 'px; top: ' + createRandomAdvert(i).location.y + 'px;';
+  pinItem.querySelector('img').src = createRandomAdvert(i).author.avatar;
+  pinItem.querySelector('img').alt = createRandomAdvert(i).offer.title;
 
   return pinItem;
 };
 
 var fragment = document.createDocumentFragment();
 for (var i = 0; i < 8; i++) {
-  fragment.appendChild(createPin(advert[i]));
+  fragment.appendChild(createPin(createAdvertsList[i]));
 }
 map.querySelector('.map__pins').appendChild(fragment);
