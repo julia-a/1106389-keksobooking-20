@@ -7,7 +7,7 @@ var ROOMS = [1, 2, 3];
 var GUESTS = [1, 2, 3, 4];
 var CHECKIN = ['12:00', '13:00', '14:00'];
 var CHECKOUT = ['12:00', '13:00', '14:00'];
-var FEATURES = ['wifi','dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCRIPTION = ['Описание 1', 'Описание 2', 'Описание 3'];
 var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
@@ -18,17 +18,17 @@ var PHOTOS = [
 // Вспомогательная функция, создающая аватар
 var getRandomAvatar = function (index) {
   return 'img/avatars/user0' + (index + 1) + '.png';
-}
+};
 
-//Вспомогательная функция, возвращающая случайный элемент из массива
+// Вспомогательная функция, возвращающая случайный элемент из массива
 var getRandomValueFromArr = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
-}
+};
 
 // Вспомогательная функция, возвращающая случайное число из заданного диапазона
 var getRandomValueFromRange = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
-}
+};
 
 // Вспомогательная функция, создающая массив строк
 var getRandomStringsArr = function (arr, min, max) {
@@ -68,7 +68,7 @@ var createRandomAdvert = function (count) {
   };
 
   return randomAdvert;
-}
+};
 
 // Функция, создающая массив объявлений (в колличестве равном count)
 var createAdvertsList = function (count) {
@@ -77,8 +77,7 @@ var createAdvertsList = function (count) {
     list[i] = createRandomAdvert(i);
   }
   return list;
-}
-// console.log(createAdvertsList(8))
+};
 
 // Шаг 2. Переключение карты из неактивного состояния в активное
 var map = document.querySelector('.map');
