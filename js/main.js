@@ -14,6 +14,7 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
+var TOTAL_ADVERTS = 8;
 
 // Вспомогательная функция, создающая аватар
 var getRandomAvatar = function (index) {
@@ -74,7 +75,7 @@ var createRandomAdvert = function (count) {
 var createAdvertsList = function (count) {
   var list = [];
   for (var i = 0; i < count; i++) {
-    list[i] = createRandomAdvert(i);
+    list.push(createRandomAdvert());
   }
   return list;
 };
@@ -98,8 +99,10 @@ var createPin = function () {
   return pinItem;
 };
 
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < 8; i++) {
-  fragment.appendChild(createPin(createAdvertsList[i]));
-}
-map.querySelector('.map__pins').appendChild(fragment);
+var renderPins = function() {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < TOTAL_ADVERTS; i++) {
+    fragment.appendChild(createPin(createAdvertsList[i]));
+  }
+  map.querySelector('.map__pins').appendChild(fragment);
+};
