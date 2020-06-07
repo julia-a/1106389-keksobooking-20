@@ -79,6 +79,7 @@ var createAdvertsList = function (count) {
   }
   return list;
 };
+console.log(createAdvertsList(8))
 
 // Шаг 2. Переключение карты из неактивного состояния в активное
 var map = document.querySelector('.map');
@@ -92,17 +93,19 @@ var mapPinTemplate = document.querySelector('#pin')
 
 var createPin = function () {
   var pinItem = mapPinTemplate.cloneNode(true);
-  pinItem.style = 'left: ' + createRandomAdvert(i).location.x + 'px; top: ' + createRandomAdvert(i).location.y + 'px;';
+  pinItem.style = 'left: ' + createRandomAdvert.location.x + 'px; top: ' + createRandomAdvert(i).location.y + 'px;';
   pinItem.querySelector('img').src = createRandomAdvert(i).author.avatar;
   pinItem.querySelector('img').alt = createRandomAdvert(i).offer.title;
 
   return pinItem;
 };
 
-var renderPins = function() {
+var renderPins = function(advertsCount) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < TOTAL_ADVERTS; i++) {
+  for (var i = 0; i < advertsCount; i++) {
     fragment.appendChild(createPin(createAdvertsList[i]));
   }
   map.querySelector('.map__pins').appendChild(fragment);
 };
+
+renderPins(TOTAL_ADVERTS);
