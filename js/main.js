@@ -15,7 +15,6 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 var TOTAL_ADVERTS = 8;
-var i = 2;
 
 // Вспомогательная функция, создающая аватар
 var getRandomAvatar = function (index) {
@@ -73,12 +72,11 @@ var createRandomAdvert = function (count) {
   return randomAdvert;
 };
 
-
 // Функция, создающая массив объявлений (в колличестве равном count)
 var createAdvertsList = function (count) {
   var list = [];
   for (var i = 0; i < count; i++) {
-    list.push(createRandomAdvert());
+    list.push(createRandomAdvert(i));
   }
   return list;
 };
@@ -93,21 +91,23 @@ var mapPinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-var createPin = function () {
+var advertsList = createAdvertsList(TOTAL_ADVERTS);
+
+var createPin = function (pin) {
   var pinItem = mapPinTemplate.cloneNode(true);
-  pinItem.style = 'left: ' + createRandomAdvert(i).location.x + 'px; top: ' + createRandomAdvert(i).location.y + 'px;';
-  pinItem.querySelector('img').src = createRandomAdvert(i).author.avatar;
-  pinItem.querySelector('img').alt = createRandomAdvert(i).offer.title;
+  pinItem.style = 'left: ' + pin.location.x + 'px; top: ' + pin.location.y + 'px;';
+  pinItem.querySelector('img').src = pin.author.avatar;
+  pinItem.querySelector('img').alt = pin.offer.title;
 
   return pinItem;
 };
 
-var renderPins = function(advertsCount) {
+var renderPins = function (pins) {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < advertsCount; i++) {
-    fragment.appendChild(createPin(createAdvertsList[i]));
+  for (var i = 0; i < pins.length; i++) {
+    fragment.appendChild(createPin(pins[i]));
   }
   map.querySelector('.map__pins').appendChild(fragment);
 };
 
-renderPins(TOTAL_ADVERTS);
+renderPins(advertsList);
