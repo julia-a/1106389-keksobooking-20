@@ -15,6 +15,7 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 var TOTAL_ADVERTS = 8;
+var i = 2;
 
 // Вспомогательная функция, создающая аватар
 var getRandomAvatar = function (index) {
@@ -38,13 +39,14 @@ var getRandomStringsArr = function (arr, min, max) {
   return newStringsArr;
 };
 
-var locationX = getRandomValueFromRange(300, 900);
-var locationY = getRandomValueFromRange(130, 630);
-
 // Шаг 1. Создание массива объявлений
 
 // Функция, создающая одно объявление
 var createRandomAdvert = function (count) {
+
+  var locationX = getRandomValueFromRange(300, 900);
+  var locationY = getRandomValueFromRange(130, 630);
+
   var randomAdvert = {
     author: {
       avatar: getRandomAvatar(count),
@@ -71,6 +73,7 @@ var createRandomAdvert = function (count) {
   return randomAdvert;
 };
 
+
 // Функция, создающая массив объявлений (в колличестве равном count)
 var createAdvertsList = function (count) {
   var list = [];
@@ -79,7 +82,6 @@ var createAdvertsList = function (count) {
   }
   return list;
 };
-console.log(createAdvertsList(8))
 
 // Шаг 2. Переключение карты из неактивного состояния в активное
 var map = document.querySelector('.map');
@@ -93,7 +95,7 @@ var mapPinTemplate = document.querySelector('#pin')
 
 var createPin = function () {
   var pinItem = mapPinTemplate.cloneNode(true);
-  pinItem.style = 'left: ' + createRandomAdvert.location.x + 'px; top: ' + createRandomAdvert(i).location.y + 'px;';
+  pinItem.style = 'left: ' + createRandomAdvert(i).location.x + 'px; top: ' + createRandomAdvert(i).location.y + 'px;';
   pinItem.querySelector('img').src = createRandomAdvert(i).author.avatar;
   pinItem.querySelector('img').alt = createRandomAdvert(i).offer.title;
 
