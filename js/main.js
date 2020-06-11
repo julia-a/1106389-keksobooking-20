@@ -81,33 +81,78 @@ var createAdvertsList = function (count) {
   return list;
 };
 
-// Шаг 2. Переключение карты из неактивного состояния в активное
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+// // Шаг 2. Переключение карты из неактивного состояния в активное
+// var map = document.querySelector('.map');
+// map.classList.remove('map--faded');
 
 
-// Шаг 3. Создание DOM-элементов соответствующих меткам на карте
-var mapPinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
+// // Шаг 3. Создание DOM-элементов соответствующих меткам на карте
+// var mapPinTemplate = document.querySelector('#pin')
+//   .content
+//   .querySelector('.map__pin');
 
-var advertsList = createAdvertsList(TOTAL_ADVERTS);
+// var advertsList = createAdvertsList(TOTAL_ADVERTS);
 
-var createPin = function (pin) {
-  var pinItem = mapPinTemplate.cloneNode(true);
-  pinItem.style = 'left: ' + pin.location.x + 'px; top: ' + pin.location.y + 'px;';
-  pinItem.querySelector('img').src = pin.author.avatar;
-  pinItem.querySelector('img').alt = pin.offer.title;
+// var createPin = function (pin) {
+//   var pinItem = mapPinTemplate.cloneNode(true);
+//   pinItem.style = 'left: ' + pin.location.x + 'px; top: ' + pin.location.y + 'px;';
+//   pinItem.querySelector('img').src = pin.author.avatar;
+//   pinItem.querySelector('img').alt = pin.offer.title;
 
-  return pinItem;
-};
+//   return pinItem;
+// };
 
-var renderPins = function (pins) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < pins.length; i++) {
-    fragment.appendChild(createPin(pins[i]));
+// var renderPins = function (pins) {
+//   var fragment = document.createDocumentFragment();
+//   for (var i = 0; i < pins.length; i++) {
+//     fragment.appendChild(createPin(pins[i]));
+//   }
+//   map.querySelector('.map__pins').appendChild(fragment);
+// };
+
+// renderPins(advertsList);
+
+// ЗАДАНИЕ 4. Обработка событий (Часть 1)
+
+/* Функция отключения элементов управления формы,
+через поиск всех тегов fieldset на странице index.html
+и добавления им атрибута disabled  */
+
+var noticeForm = document.querySelector('.notice__form');
+var fieldsetElement = document.querySelectorAll('fieldset');
+var mainPin = document.querySelector('.map__pin--main');
+
+var addDisabledAttribute = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].disabled = true;
   }
-  map.querySelector('.map__pins').appendChild(fragment);
+};
+addDisabledAttribute(fieldsetElement);
+
+// Функция удаления атрибута disabled
+var removeDisabledAttribute = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].disabled = false;
+  }
 };
 
-renderPins(advertsList);
+// Функция активации страницы
+var activationPage = function () {
+  map.classList.remove('map--faded');
+  removeDisabledAttribute(fieldsetElement);
+  noticeForm.classList.remove('notice__form--disabled');
+};
+
+// Обработчик для активации страницы левой (основной) кнопкой мыши
+mainPin.addEventListener('mouseup', function (evt) {
+  if (evt.which === 1) {
+    activationPage();
+  };
+});
+
+// Обработчик для активации страницы с клавиатуры, клавишей enter
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 13) {
+    activationPage();
+  };
+});
