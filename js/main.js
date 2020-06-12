@@ -116,6 +116,7 @@ var renderPins = function (pins) {
   map.querySelector('.map__pins').appendChild(fragment);
 };
 
+
 // ЗАДАНИЕ 3 (Часть 2). Создать карточку объявления
 var advertTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
