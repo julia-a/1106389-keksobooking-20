@@ -4,7 +4,7 @@
 
 var TITLE = ['Заголовок 1', 'Заголовок 2', 'Заголовок 3'];
 var PRICE = [100, 200, 300, 400];
-var TYPE = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
+var TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var ROOMS = [1, 2, 3];
 var GUESTS = [1, 2, 3, 4];
 var CHECKIN = ['12:00', '13:00', '14:00'];
@@ -12,19 +12,26 @@ var CHECKOUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCRIPTION = ['Описание 1', 'Описание 2', 'Описание 3'];
 var PHOTOS = [
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/11000000/10360000/10357700/10357605/10357605_25_b.jpg',
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/11000000/10360000/10357700/10357605/10357605_27_b.jpg',
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/11000000/10360000/10357700/10357605/10357605_17_b.jpg',
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/11000000/10360000/10357700/10357605/10357605_30_b.jpg',
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/10000000/9160000/9151200/9151174/9151174_1_b.jpg',
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/10000000/9160000/9151200/9151174/9151174_12_b.jpg',
-  'https://cdn.ostrovok.ru/t/x500/mec/hotels/10000000/9160000/9151200/9151174/9151174_5_b.jpg'
+  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
-var TOTAL_ADVERTS = 8;
+var TOTAL_ADVERTS = 1;
 
 // Вспомогательная функция, создающая аватар
 var getRandomAvatar = function (index) {
   return 'img/avatars/user0' + (index + 1) + '.png';
+};
+
+// Вспомогательная функция, перевод на русский типа объекта
+var translateTypeOfPlace = function (englishType) {
+  var translate = {
+    palace: 'Дворец',
+    flat: 'Квартира',
+    house: 'Дом',
+    bungalo: 'Бунгало'
+  };
+  return translate[englishType];
 };
 
 // Вспомогательная функция, возвращающая случайный элемент из массива
@@ -67,7 +74,7 @@ var createRandomAdvert = function (count) {
       checkout: getRandomValueFromArr(CHECKOUT),
       features: getRandomStringsArr(FEATURES, 1, 6),
       description: getRandomValueFromArr(DESCRIPTION),
-      photos: getRandomStringsArr(PHOTOS, 1, 7)
+      photos: getRandomStringsArr(PHOTOS, 1, 4)
     },
     location: {
       x: locationX,
@@ -87,12 +94,7 @@ var createAdvertsList = function (count) {
   return list;
 };
 
-// Шаг 2. Переключение карты из неактивного состояния в активное
-var map = document.querySelector('.map');
-// map.classList.remove('map--faded');
-
-
-// Шаг 3. Создание DOM-элементов соответствующих меткам на карте
+// Шаг 2. Создание DOM-элементов соответствующих меткам на карте
 var mapPinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
@@ -126,7 +128,7 @@ var renderMapPopup = function (advert) {
   cardElement.querySelector('.popup__title').textContent = advert.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = advert.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = advert.offer.price + ' ₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = advert.offer.type;
+  // cardElement.querySelector('.popup__type').textContent = advert.offer.type;
   cardElement.querySelector('.popup__text--capacity').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
   cardElement.querySelector('.popup__features').textContent = advert.offer.description;
@@ -159,17 +161,15 @@ var renderPhotos = function (popupPhotos, photos) {
   popupPhotos.appendChild(fragment);
 };
 
-renderPins(advertsList);
-renderMapPopup(advertsList[0]);
-
 // ЗАДАНИЕ 4 (Часть 1). Реализация сценария переключения режимов страницы
 
 /* Функция отключения элементов управления формы,
 через поиск всех тегов fieldset на странице index.html
 и добавления им атрибута disabled  */
 
-var noticeForm = document.querySelector('.notice__form');
+var adForm = document.querySelector('.ad-form');
 var fieldsetElement = document.querySelectorAll('fieldset');
+var map = document.querySelector('.map');
 var mainPin = document.querySelector('.map__pin--main');
 
 var addDisabledAttribute = function (arr) {
@@ -190,7 +190,9 @@ var removeDisabledAttribute = function (arr) {
 var activationPage = function () {
   map.classList.remove('map--faded');
   removeDisabledAttribute(fieldsetElement);
-  noticeForm.classList.remove('notice__form--disabled');
+  adForm.classList.remove('ad-form--disabled');
+  renderPins(advertsList);
+  // renderMapPopup(advertsList[0]);
 };
 
 // Обработчик для активации страницы левой (основной) кнопкой мыши
@@ -207,4 +209,34 @@ mainPin.addEventListener('keydown', function (evt) {
   };
 });
 
+// Заготовка для функции вывода карточки по клику на любой пин
 
+var currentPin = document.querySelector('.map__pin');
+
+currentPin.addEventListener('click', function () {
+  console.log('Здесь должна выводится карточка');
+});
+
+// Заготовка для функции сравнения введенного кол-ва гостей к кол-ву комнат
+
+var validateaCapacity = function () {
+  var capacityValue = offerCapacity.value; // Значение кол-ва гостей
+  var roomNumber = offerRoomNumber.value; // Значение кол-ва комнат
+
+  var message = '';
+
+  if (roomNumber === 1) { // Как написать условие, что выбрана 1 комната
+    if (capacityValue !== nn) { // Как написать условие проверки, что выбранная 1 комната не равна 1 гостю
+      message = 'Предупреждающее сообщение 1';
+    }
+  } else if (roomNumber === RoomtType.TWO) { // если выбраны 2 комнаты
+    if (capacityValue !== GuestType.ONE && capacityValue !== GuestType.TWO) { // если значение 2 комнат не равно значению 1 или 2 гостей
+      message = 'Предупреждающее сообщение 2';
+    }
+  } else if (roomNumber === RoomtType.HUNDERT) {
+    if (capacityValue !== GuestType.NOT_FOR_GUEST) {
+      message = 'Выбранный объект размещения не сможет принять столько гостей';
+    }
+  }
+  offerCapacity.setCustomValidity(message); // вывести подходящее сообщение
+};
