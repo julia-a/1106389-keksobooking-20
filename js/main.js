@@ -234,6 +234,7 @@ closeButton.addEventListener('click', function () {
   // advertTemplate.remove(); // удалить карточку из DOM
 });
 
+
 // Валидация формы
 var offerTitle = form.querySelector('#title');
 var offerChcekIn = form.querySelector('#timein');
