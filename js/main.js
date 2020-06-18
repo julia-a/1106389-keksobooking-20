@@ -104,7 +104,6 @@ var createPin = function (pin, index) {
   pinItem.querySelector('img').src = pin.author.avatar;
   pinItem.querySelector('img').alt = pin.offer.title;
   pinItem.dataset.numPin = index;
-
   return pinItem;
 };
 
@@ -135,6 +134,23 @@ var renderMapPopup = function (advert) {
   cardElement.querySelector('.popup__avatar').src = advert.author.avatar;
   renderPhotoContainer(cardElement, advert.offer.photos);
   mapFiltersContainer.insertAdjacentElement('beforebegin', cardElement);
+
+  // Закрытие объявления по клику на крестик
+  var closeButton = cardElement.querySelector('.popup__close');
+  closeButton.addEventListener('click', function () {
+    cardElement.remove();
+    document.removeEventListener('keydown', onPopupEscapePress);
+  });
+  document.addEventListener('keydown', onPopupEscapePress);
+};
+
+// Закрытие объявления по нажатию на ESC
+var onPopupEscapePress = function (evt) {
+  var cardElement = document.querySelector('.map__card');
+  if (evt.key === 'Escape') {
+    cardElement.remove();
+    document.removeEventListener('keydown', onPopupEscapePress);
+  }
 };
 
 // Функция проверки контейнера на наличие в нем фотографий
@@ -219,21 +235,6 @@ var currentPin = pinsContainer.addEventListener('click', function (evt) {
     renderMapPopup(advertsList[parentElement.dataset.numPin]);
   }
 });
-
-// Обработчик закрытия окна с карточкой объявления при нажатии на крестик (кнопку .popup__close )
-var closeButton = document.querySelector('.popup__close');
-console.log(closeButton);
-
-var closeButton = advertTemplate.querySelector('.popup__close');
-console.log(closeButton);
-
-advertTemplate.remove(); // удалить
-
-closeButton.addEventListener('click', function () {
-  console.log('Test');
-  // advertTemplate.remove(); // удалить карточку из DOM
-});
-
 
 // Валидация формы
 var offerTitle = form.querySelector('#title');
