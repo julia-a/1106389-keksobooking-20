@@ -1,28 +1,25 @@
 'use strict';
 (function () {
+  // Вспомогательная функция, возвращающая случайный элемент из массива
+  var getRandomValueFromArr = function (arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
+
+  // Вспомогательная функция, возвращающая случайное число из заданного диапазона
+  var getRandomValueFromRange = function (min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  };
+
+  // Вспомогательная функция, создающая массив строк
+  var getRandomStringsFromArr = function (arr, min, max) {
+    var newStringsArr = arr.slice();
+    newStringsArr.length = getRandomValueFromRange(min, max);
+    return newStringsArr;
+  };
+
   window.util = {
-    getRandomAvatar = function (index) {
-      return 'img/avatars/user0' + (index + 1) + '.png';
-    },
-    translateTypeOfPlace = function (englishType) {
-      var translate = {
-        palace: 'Дворец',
-        flat: 'Квартира',
-        house: 'Дом',
-        bungalo: 'Бунгало'
-      };
-      return translate[englishType];
-    },
-    getRandomValueFromArr = function (arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    },
-    getRandomValueFromRange = function (min, max) {
-      return Math.floor(Math.random() * (max - min)) + min;
-    },
-    getRandomStringsArr = function (arr, min, max) {
-      var newStringsArr = arr.slice();
-      newStringsArr.length = getRandomValueFromRange(min, max);
-      return newStringsArr;
-    }
+    getRandomValueFromArr: getRandomValueFromArr,
+    getRandomValueFromRange: getRandomValueFromRange,
+    getRandomStringsFromArr: getRandomStringsFromArr
   };
 })();

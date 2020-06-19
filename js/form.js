@@ -7,10 +7,30 @@
   var offerChcekIn = form.querySelector('#timein');
   var offerChcekOut = form.querySelector('#timeout');
   var offerPriceForNight = form.querySelector('#price');
+  var prices = {
+    bungalo: {
+      value: 0,
+      max: 1000000
+    },
+    flat: {
+      value: 1000,
+      max: 1000000
+    },
+    house: {
+      value: 5000,
+      max: 1000000
+    },
+    palace: {
+      value: 10000,
+      max: 1000000
+    }
+  };
+
   var offerTypeOfHousing = form.querySelector('#type');
   var offerRoomNumber = form.querySelector('#room_number');
   var numberOfRooms = form.elements.rooms;
   var numberOfBeds = form.elements.capacity;
+
 
   // Валидация поля «Заголовок»
   offerTitle.addEventListener('invalid', function () {
@@ -59,31 +79,33 @@
   var syncPriceForNigth = function () {
     switch (offerTypeOfHousing.value) {
       case 'bungalo':
-        offerPriceForNight.setAttribute('value', 0);
-        offerPriceForNight.setAttribute('min', 0);
-        offerPriceForNight.setAttribute('max', 1000000);
+        offerPriceForNight.setAttribute('value', prices.bungalo.value);
+        offerPriceForNight.setAttribute('min', prices.bungalo.value);
+        offerPriceForNight.setAttribute('max', prices.bungalo.max);
         break;
       case 'flat':
-        offerPriceForNight.setAttribute('value', 1000);
-        offerPriceForNight.setAttribute('min', 1000);
-        offerPriceForNight.setAttribute('max', 1000000);
+        offerPriceForNight.setAttribute('value', prices.bungalo.value);
+        offerPriceForNight.setAttribute('min', prices.bungalo.value);
+        offerPriceForNight.setAttribute('max', prices.bungalo.max);
         break;
       case 'house':
-        offerPriceForNight.setAttribute('value', 5000);
-        offerPriceForNight.setAttribute('min', 5000);
-        offerPriceForNight.setAttribute('max', 1000000);
+        offerPriceForNight.setAttribute('value', prices.house.value);
+        offerPriceForNight.setAttribute('min', prices.house.value);
+        offerPriceForNight.setAttribute('max', prices.house.max);
         break;
       case 'palace':
-        offerPriceForNight.setAttribute('value', 10000);
-        offerPriceForNight.setAttribute('min', 10000);
-        offerPriceForNight.setAttribute('max', 1000000);
+        offerPriceForNight.setAttribute('value', prices.palace.value);
+        offerPriceForNight.setAttribute('min', prices.palace.value);
+        offerPriceForNight.setAttribute('max', prices.palace.max);
         break;
     }
   };
   offerTypeOfHousing.addEventListener('change', syncPriceForNigth);
 
   // Отдельная проверка значения указанного в поле «Цена за ночь»
-  var validationPrice = function () {
+  var validationPrice = function (evt) {
+    var inputPriceForNight = evt.target;
+
     if (inputPriceForNight.validity.rangeUnderflow) {
       offerPriceForNight.setCustomValidity('Стоимость жилья не может быть ниже рекомендованной');
     } else if (offerPriceForNight.validity.rangeOverflow) {
@@ -135,4 +157,8 @@
     }
   };
   offerRoomNumber.addEventListener('change', syncRoomsGuests);
+
+  window.form = {
+    syncRoomsGuests: syncRoomsGuests
+  };
 })();

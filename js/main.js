@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   var form = document.querySelector('.ad-form');
-  var fieldsetElement = document.querySelectorAll('fieldset');
+  var fieldset = document.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
 
@@ -13,7 +13,7 @@
       arr[i].disabled = true;
     }
   };
-  addDisabledAttribute(fieldsetElement);
+  addDisabledAttribute(fieldset);
 
   // Функция удаления атрибута disabled
   var removeDisabledAttribute = function (arr) {
@@ -25,9 +25,10 @@
   // Функция активации страницы
   var activationPage = function () {
     map.classList.remove('map--faded');
-    removeDisabledAttribute(fieldsetElement);
+    removeDisabledAttribute(fieldset);
     form.classList.remove('ad-form--disabled');
     window.pin.renderPins(window.card.advertsList);
+    window.form.syncRoomsGuests();
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши

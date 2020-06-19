@@ -1,5 +1,15 @@
 'use strict';
 (function () {
+  var coordinates = {
+    x: {
+      min: 300,
+      max: 900
+    },
+    y: {
+      min: 130,
+      max: 630
+    }
+  };
   var TITLE = ['Заголовок 1', 'Заголовок 2', 'Заголовок 3'];
   var PRICE = [100, 200, 300, 400];
   var TYPE = ['palace', 'flat', 'house', 'bungalo'];
@@ -18,28 +28,43 @@
   var advertTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
 
+  // Вспомогательная функция, создающая аватар
+  var getRandomAvatar = function (index) {
+    return 'img/avatars/user0' + (index + 1) + '.png';
+  };
+
+  // Вспомогательная функция, перевод на русский типа объекта
+  var translateTypeOfPlace = function (englishType) {
+    var translate = {
+      palace: 'Дворец',
+      flat: 'Квартира',
+      house: 'Дом',
+      bungalo: 'Бунгало'
+    };
+    return translate[englishType];
+  };
+
   // Функция, создающая одно объявление
   var createRandomAdvert = function (count) {
-
-    var locationX = window.util.getRandomValueFromRange(300, 900);
-    var locationY = window.util.getRandomValueFromRange(130, 630);
+    var locationX = window.util.getRandomValueFromRange(coordinates.x.min, coordinates.x.max);
+    var locationY = window.util.getRandomValueFromRange(coordinates.y.min, coordinates.y.max);
 
     var randomAdvert = {
       author: {
-        avatar: window.util.getRandomAvatar(count),
+        avatar: getRandomAvatar(count),
       },
       offer: {
         title: window.util.getRandomValueFromArr(TITLE),
         address: locationX + ', ' + locationY,
         price: window.util.getRandomValueFromArr(PRICE),
-        type: window.util.translateTypeOfPlace(getRandomValueFromArr(TYPE)),
+        type: translateTypeOfPlace(window.util.getRandomValueFromArr(TYPE)),
         rooms: window.util.getRandomValueFromArr(ROOMS),
         guests: window.util.getRandomValueFromArr(GUESTS),
         checkin: window.util.getRandomValueFromArr(CHECKIN),
         checkout: window.util.getRandomValueFromArr(CHECKOUT),
-        features: window.util.getRandomStringsArr(FEATURES, 1, 6),
+        features: window.util.getRandomStringsFromArr(FEATURES, 1, 6),
         description: window.util.getRandomValueFromArr(DESCRIPTION),
-        photos: window.util.getRandomStringsArr(PHOTOS, 1, 4)
+        photos: window.util.getRandomStringsFromArr(PHOTOS, 1, 4)
       },
       location: {
         x: locationX,
@@ -61,8 +86,19 @@
 
   var advertsList = createAdvertsList(TOTAL_ADVERTS);
 
+  // Перед созданием карточки объявления проверяем, не создана ли до этого другая карточка,
+  // если да - то предыдущую карточку удаляем
+  var removePopup = function () {
+    var cardElement = document.querySelector('.map__card');
+    if (cardElement !== null) { // если уже открыто одно объявление
+      cardElement.remove();
+      document.removeEventListener('keydown', onPopupEscapePress);
+    }
+  };
+
   // Функция создания карточки объявления
   var renderMapPopup = function (advert) {
+    removePopup(); // перед созданием новой карточки запускаем проверку, не создано ли до этого другое объявление
     var cardElement = advertTemplate.cloneNode(true);
     cardElement.querySelector('.popup__title').textContent = advert.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = advert.offer.address;
@@ -118,14 +154,20 @@
   };
 
   // Функция вывода карточки объекта по клику на пин
-  var currentPin = window.pin.pinsContainer.addEventListener('click', function (evt) {
+  var pinsContainer = document.querySelector('.map__pins')
+
+  pinsContainer.addEventListener('click', function (evt) {
     evt.preventDefault();
     var target = evt.target;
     var parentElement = target.parentElement
 
-    if (parentElement.tagName === 'BUTTON') {
+    if (parentElement.tagName === 'BUTTON' && advertsList[parentElement.dataset.numPin]) {
       renderMapPopup(advertsList[parentElement.dataset.numPin]);
     }
   });
+
+  window.card = {
+    advertsList: advertsList
+  };
 })();
 
