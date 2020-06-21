@@ -22,12 +22,25 @@
     }
   };
 
+  // Функция обработки ошибок при загрузке данных с сервера
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
   // Функция активации страницы
   var activationPage = function () {
     map.classList.remove('map--faded');
     removeDisabledAttribute(fieldset);
     form.classList.remove('ad-form--disabled');
-    window.pin.renderPins(window.card.advertsList);
+    window.backend.load(window.pin.renderPins, errorHandler);
     window.form.syncRoomsGuests();
   };
 
