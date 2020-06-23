@@ -5,13 +5,13 @@
   var TIMEOUT = 10000;
 
   // Функция, получающая данные с сервера
-  var load = function (onLoad, onError) {
+  var load = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status === STATUS_SUCCES) {
-        onLoad(xhr.response);
+        onSuccess(xhr.response);
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }

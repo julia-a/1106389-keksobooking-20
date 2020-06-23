@@ -1,5 +1,11 @@
 'use strict';
 (function () {
+  var borderCoords = {
+    top: 130,
+    bottom: 630,
+    left: 50,
+    right: 1090
+  };
   var form = document.querySelector('.ad-form');
   var fieldset = document.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
@@ -40,6 +46,7 @@
     window.form.syncRoomsGuests();
   };
 
+  console.log(window.backend.load(window.pin.renderPins, errorHandler))
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mouseup', function (evt) {
     if (evt.which === 1) {
@@ -53,4 +60,57 @@
       activationPage();
     };
   });
+
+  // Функция реализующая передвижение главной метки (mainPin) по карте
+  mainPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    // Координаты точки начала движния
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      setBorders();
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  // функция, устанавливающая границы передвижения метки по карте
+  var setBorders = function () {
+    if (mainPin.offsetTop < borderCoords.top) {
+      mainPin.style.top = borderCoords.top + 'px';
+    } else if (mainPin.offsetTop > borderCoords.bottom) {
+      mainPin.style.top = borderCoords.bottom + 'px';
+    } else if (mainPin.offsetLeft < borderCoords.left) {
+      mainPin.style.left = borderCoords.left + 'px';
+    } else if (mainPin.offsetLeft > borderCoords.right) {
+      mainPin.style.left = borderCoords.right + 'px';
+    }
+  };
 })();
+
