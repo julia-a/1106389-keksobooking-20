@@ -1,5 +1,11 @@
 'use strict';
 (function () {
+  var borderCoords = {
+    top: 130,
+    bottom: 630,
+    left: 50,
+    right: 1090
+  };
   var form = document.querySelector('.ad-form');
   var fieldset = document.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
@@ -22,12 +28,43 @@
     }
   };
 
+  // Функция с обработчиком события клика на метку.
+  // Вызывает показ карточки объявления с соответствующими данными
+  var subscribeClick = function (element, advert) {
+    element.addEventListener('click', function () {
+      window.card.renderMapPopup(advert);
+    });
+  };
+
+  var clickPins = function (arrData) {
+    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < mapPinElements.length; i++) {
+      subscribeClick(mapPinElements[i], arrData[i]);
+    }
+  };
+
+  // Функция "успешного поведения" при загрузке данных с сервера.
+  // Ренедерит метки и по клику на метку показывает объявление
+  var successHandler = function (arrData) {
+    window.pin.renderPins(arrData);
+    clickPins(arrData);
+  };
+
+  // Функция обработки ошибок при загрузке данных с сервера,
+  // через добавление сообщения в имеющийся в разметке шаблон/template
+  var errorHandler = function (errorMessage) {
+    var template = document.querySelector('#error');
+    var message = template.content.querySelector('.error__message');
+    message.textContent = errorMessage;
+    document.body.appendChild(template.content.cloneNode(true));
+  };
+
   // Функция активации страницы
   var activationPage = function () {
     map.classList.remove('map--faded');
     removeDisabledAttribute(fieldset);
     form.classList.remove('ad-form--disabled');
-    window.pin.renderPins(window.card.advertsList);
+    window.backend.load(successHandler, errorHandler);
     window.form.syncRoomsGuests();
   };
 
@@ -44,4 +81,57 @@
       activationPage();
     };
   });
+
+  // Функция реализующая передвижение главной метки (mainPin) по карте
+  mainPin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    // Координаты точки начала движния
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+      mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+      setBorders();
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  // функция, устанавливающая границы передвижения метки по карте
+  var setBorders = function () {
+    if (mainPin.offsetTop < borderCoords.top) {
+      mainPin.style.top = borderCoords.top + 'px';
+    } else if (mainPin.offsetTop > borderCoords.bottom) {
+      mainPin.style.top = borderCoords.bottom + 'px';
+    } else if (mainPin.offsetLeft < borderCoords.left) {
+      mainPin.style.left = borderCoords.left + 'px';
+    } else if (mainPin.offsetLeft > borderCoords.right) {
+      mainPin.style.left = borderCoords.right + 'px';
+    }
+  };
 })();
+
