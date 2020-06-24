@@ -1,91 +1,7 @@
-
 'use strict';
 (function () {
-  var coordinates = {
-    x: {
-      min: 300,
-      max: 900
-    },
-    y: {
-      min: 130,
-      max: 630
-    }
-  };
-  var TITLE = ['Заголовок 1', 'Заголовок 2', 'Заголовок 3'];
-  var PRICE = [100, 200, 300, 400];
-  var TYPE = ['palace', 'flat', 'house', 'bungalo'];
-  var ROOMS = [1, 2, 3];
-  var GUESTS = [1, 2, 3, 4];
-  var CHECKIN = ['12:00', '13:00', '14:00'];
-  var CHECKOUT = ['12:00', '13:00', '14:00'];
-  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var DESCRIPTION = ['Описание 1', 'Описание 2', 'Описание 3'];
-  var PHOTOS = [
-    'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
-    'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
-  ];
-  var TOTAL_ADVERTS = 8;
   var advertTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
-
-  // Вспомогательная функция, создающая аватар
-  var getRandomAvatar = function (index) {
-    return 'img/avatars/user0' + (index + 1) + '.png';
-  };
-
-  // Вспомогательная функция, перевод на русский типа объекта
-  var translateTypeOfPlace = function (englishType) {
-    var translate = {
-      palace: 'Дворец',
-      flat: 'Квартира',
-      house: 'Дом',
-      bungalo: 'Бунгало'
-    };
-    return translate[englishType];
-  };
-
-  // Функция, создающая одно объявление
-  var createRandomAdvert = function (count) {
-    var locationX = window.util.getRandomValueFromRange(coordinates.x.min, coordinates.x.max);
-    var locationY = window.util.getRandomValueFromRange(coordinates.y.min, coordinates.y.max);
-
-    var randomAdvert = {
-      author: {
-        avatar: getRandomAvatar(count),
-      },
-      offer: {
-        title: window.util.getRandomValueFromArr(TITLE),
-        address: locationX + ', ' + locationY,
-        price: window.util.getRandomValueFromArr(PRICE),
-        type: translateTypeOfPlace(window.util.getRandomValueFromArr(TYPE)),
-        rooms: window.util.getRandomValueFromArr(ROOMS),
-        guests: window.util.getRandomValueFromArr(GUESTS),
-        checkin: window.util.getRandomValueFromArr(CHECKIN),
-        checkout: window.util.getRandomValueFromArr(CHECKOUT),
-        features: window.util.getRandomStringsFromArr(FEATURES, 1, 6),
-        description: window.util.getRandomValueFromArr(DESCRIPTION),
-        photos: window.util.getRandomStringsFromArr(PHOTOS, 1, 4)
-      },
-      location: {
-        x: locationX,
-        y: locationY,
-      }
-    };
-
-    return randomAdvert;
-  };
-
-  // Функция, создающая массив объявлений (в колличестве равном count)
-  var createAdvertsList = function (count) {
-    var list = [];
-    for (var i = 0; i < count; i++) {
-      list.push(createRandomAdvert(i));
-    }
-    return list;
-  };
-
-  var advertsList = createAdvertsList(TOTAL_ADVERTS);
 
   // Перед созданием карточки объявления проверяем, не создана ли до этого другая карточка,
   // если да - то предыдущую карточку удаляем
@@ -154,21 +70,8 @@
     popupPhotos.appendChild(fragment);
   };
 
-  // Функция вывода карточки объекта по клику на пин
-  var pinsContainer = document.querySelector('.map__pins')
-
-  pinsContainer.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    var target = evt.target;
-    var parentElement = target.parentElement
-
-    if (parentElement.tagName === 'BUTTON' && advertsList[parentElement.dataset.numPin]) {
-      renderMapPopup(advertsList[parentElement.dataset.numPin]);
-    }
-  });
-
   window.card = {
-    advertsList: advertsList
+    renderMapPopup: renderMapPopup
   };
 })();
 

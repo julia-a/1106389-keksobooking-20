@@ -28,6 +28,28 @@
     }
   };
 
+  // Функция с обработчиком события клика на метку.
+  // Вызывает показ карточки объявления с соответствующими данными
+  var subscribeClick = function (element, advert) {
+    element.addEventListener('click', function () {
+      window.card.renderMapPopup(advert);
+    });
+  };
+
+  var clickPins = function (arrData) {
+    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < mapPinElements.length; i++) {
+      subscribeClick(mapPinElements[i], arrData[i]);
+    }
+  };
+
+  // Функция "успешного поведения" при загрузке данных с сервера.
+  // Ренедерит метки и по клику на метку показывает объявление
+  var successHandler = function (arrData) {
+    window.pin.renderPins(arrData);
+    clickPins(arrData);
+  };
+
   // Функция обработки ошибок при загрузке данных с сервера,
   // через добавление сообщения в имеющийся в разметке шаблон/template
   var errorHandler = function (errorMessage) {
@@ -42,11 +64,10 @@
     map.classList.remove('map--faded');
     removeDisabledAttribute(fieldset);
     form.classList.remove('ad-form--disabled');
-    window.backend.load(window.pin.renderPins, errorHandler);
+    window.backend.load(successHandler, errorHandler);
     window.form.syncRoomsGuests();
   };
 
-  console.log(window.backend.load(window.pin.renderPins, errorHandler))
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mouseup', function (evt) {
     if (evt.which === 1) {
