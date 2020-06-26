@@ -4,6 +4,7 @@
   var MAX_TITLE_LENGTH = 100;
   var form = document.querySelector('.ad-form');
   var offerTitle = form.querySelector('#title');
+  var offerAddress = form.querySelector('#address');
   var offerChcekIn = form.querySelector('#timein');
   var offerChcekOut = form.querySelector('#timeout');
   var offerPriceForNight = form.querySelector('#price');
@@ -25,7 +26,6 @@
       max: 1000000
     }
   };
-
   var offerTypeOfHousing = form.querySelector('#type');
   var offerRoomNumber = form.querySelector('#room_number');
   var numberOfRooms = form.elements.rooms;
@@ -45,14 +45,19 @@
     var valueLength = offerTitle.value.length;
     if (valueLength < MIN_TITLE_LENGTH) {
       offerTitle.reportValidity();
-      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) +' символов');
+      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' символов');
     } else if (valueLength > MAX_TITLE_LENGTH) {
       offerTitle.reportValidity();
-      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) +' символов');
+      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' символов');
     } else {
       offerTitle.setCustomValidity(''); // Передает пустую строку, что означает что поле заполнено правильно
     }
   });
+
+  // Ставим стартовые координаты в поле  «Адрес»
+  var putMainPinPositionToAddress = function (x, y) {
+    offerAddress.value = x + ', ' + y;
+  };
 
   // Синхронизация полей «Время заезда и выезда»
   var syncCheckInOut = function (chcekInValue, chcekOutValue) {
@@ -66,7 +71,7 @@
       case '14:00':
         chcekOutValue.value = chcekInValue.value;
         break;
-    };
+    }
   };
   offerChcekIn.addEventListener('change', function () {
     syncCheckInOut(offerChcekIn, offerChcekOut);
@@ -159,6 +164,7 @@
   offerRoomNumber.addEventListener('change', syncRoomsGuests);
 
   window.form = {
-    syncRoomsGuests: syncRoomsGuests
+    syncRoomsGuests: syncRoomsGuests,
+    putMainPinPositionToAddress: putMainPinPositionToAddress
   };
 })();
