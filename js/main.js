@@ -8,13 +8,16 @@
     MIN_Y: 130,
     MAX_Y: 630
   };
+
+  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
+
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
     X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
     Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT
   };
   var MAX_COORD = {
-    X: PinSetting.MAX_X - PinSetting.HALF_WIDTH,
+    X: rect.width - PinSetting.HALF_WIDTH,
     Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT
   };
   var form = document.querySelector('.ad-form');
