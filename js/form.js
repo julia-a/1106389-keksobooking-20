@@ -26,10 +26,12 @@
       max: 1000000
     }
   };
+
   var offerTypeOfHousing = form.querySelector('#type');
   var offerRoomNumber = form.querySelector('#room_number');
   var numberOfRooms = form.elements.rooms;
   var numberOfBeds = form.elements.capacity;
+
 
   // Валидация поля «Заголовок»
   offerTitle.addEventListener('invalid', function () {
@@ -44,17 +46,17 @@
     var valueLength = offerTitle.value.length;
     if (valueLength < MIN_TITLE_LENGTH) {
       offerTitle.reportValidity();
-      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' символов');
+      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) +' символов');
     } else if (valueLength > MAX_TITLE_LENGTH) {
       offerTitle.reportValidity();
-      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' символов');
+      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) +' символов');
     } else {
       offerTitle.setCustomValidity(''); // Передает пустую строку, что означает что поле заполнено правильно
     }
   });
 
-  // Ставим стартовые координаты в поле «Адрес»
-  var putMainPinPositionToAddress = function (x, y) {
+   // Ставим стартовые координаты в поле «Адрес»
+   var putMainPinPositionToAddress = function (x, y) {
     offerAddress.value = x + ', ' + y;
   };
 
@@ -70,7 +72,7 @@
       case '14:00':
         chcekOutValue.value = chcekInValue.value;
         break;
-    }
+    };
   };
   offerChcekIn.addEventListener('change', function () {
     syncCheckInOut(offerChcekIn, offerChcekOut);
@@ -167,3 +169,4 @@
     putMainPinPositionToAddress: putMainPinPositionToAddress
   };
 })();
+

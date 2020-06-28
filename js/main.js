@@ -172,7 +172,7 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  window.backend = {
+  window.main = {
     deactivatePage: deactivatePage
   };
 })();
