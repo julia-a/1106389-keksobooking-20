@@ -1,20 +1,21 @@
 'use strict';
 (function () {
   var PinSetting = {
-    HEIGHT: 75,
     HALF_WIDTH: 33,
     HALF_HEIGHT: 33,
-    TAIL_HEIGHT: 16
+    MIN_X: 0,
+    MAX_X: 600,
+    MIN_Y: 130,
+    MAX_Y: 630
   };
-  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
-    X: rect.left - PinSetting.HEIGHT - PinSetting.HALF_HEIGHT,
-    Y: 130 - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
+    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT
   };
   var MAX_COORD = {
-    X: rect.width - PinSetting.HALF_HEIGHT,
-    Y: 630 - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+    X: PinSetting.MAX_X - PinSetting.HALF_WIDTH,
+    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT
   };
   var form = document.querySelector('.ad-form');
   var fieldset = document.querySelectorAll('fieldset');
@@ -85,7 +86,7 @@
   };
 
   // Функция активации страницы
-  var activationPage = function () {
+  var activatePage = function () {
     map.classList.remove('map--faded');
     removeDisabledAttribute(fieldset);
     startMainPinPosition();
@@ -97,16 +98,22 @@
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mouseup', function (evt) {
     if (evt.which === 1) {
-      activationPage();
+      activatePage();
     }
   });
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
-      activationPage();
+      activatePage();
     }
   });
+
+  // Функция для перевода страницы в неактивное состояние
+  var deactivatePage = function () {
+    map.classList.add('map--faded'); // Деактивируем карту
+    addDisabledAttribute(fieldset);
+  };
 
   // Функция реализующая передвижение главной метки (mainPin) по карте
   mainPin.addEventListener('mousedown', function (evt) {
@@ -164,5 +171,9 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  window.backend = {
+    deactivatePage: deactivatePage
+  };
 })();
 

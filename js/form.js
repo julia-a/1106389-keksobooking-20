@@ -31,7 +31,6 @@
   var numberOfRooms = form.elements.rooms;
   var numberOfBeds = form.elements.capacity;
 
-
   // Валидация поля «Заголовок»
   offerTitle.addEventListener('invalid', function () {
     if (offerTitle.validity.valueMissing) {
@@ -54,7 +53,7 @@
     }
   });
 
-  // Ставим стартовые координаты в поле  «Адрес»
+  // Ставим стартовые координаты в поле «Адрес»
   var putMainPinPositionToAddress = function (x, y) {
     offerAddress.value = x + ', ' + y;
   };
