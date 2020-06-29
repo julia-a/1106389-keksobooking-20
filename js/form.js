@@ -2,6 +2,7 @@
 (function () {
   var MIN_TITLE_LENGTH = 30;
   var MAX_TITLE_LENGTH = 100;
+  var main = document.querySelector('main');
   var form = document.querySelector('.ad-form');
   var offerTitle = form.querySelector('#title');
   var offerAddress = form.querySelector('#address');
@@ -26,12 +27,10 @@
       max: 1000000
     }
   };
-
   var offerTypeOfHousing = form.querySelector('#type');
   var offerRoomNumber = form.querySelector('#room_number');
   var numberOfRooms = form.elements.rooms;
   var numberOfBeds = form.elements.capacity;
-
 
   // Валидация поля «Заголовок»
   offerTitle.addEventListener('invalid', function () {
@@ -164,9 +163,55 @@
   };
   offerRoomNumber.addEventListener('change', syncRoomsGuests);
 
+  var successTemplate = document.querySelector('#success').content.querySelector('.success');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+  var successPopup = successTemplate.cloneNode(true);
+  var errorPopup = errorTemplate.cloneNode(true);
+
+  // Функция "успешного поведения" при отправке данных из формы на сервер
+  // Показывает окно об успешной отправке, а затем запускает функцию деактивации страницы
+  var successHandler = function () {
+    main.appendChild(successPopup);
+    window.main.deactivatePage();
+  };
+
+  successPopup.addEventListener('click', function () {
+    successPopup.style.display = 'none';
+  });
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Escape') {
+      successPopup.style.display = 'none';
+      errorPopup.style.display = 'none';
+    }
+  });
+
+  var errorHandler = function (errorMessage) {
+    var message = errorPopup.querySelector('.error__message');
+    message.textContent = errorMessage;
+    main.appendChild(errorPopup);
+  };
+
+  errorPopup.addEventListener('click', function () {
+    errorPopup.style.display = 'none';
+  });
+
+  var errorBtn = errorPopup.querySelector('.error__button');
+  errorBtn.addEventListener('click', function () {
+    errorPopup.style.display = 'none';
+  });
+
+  // Отправка данных из формы на сервер и обработка этого события,
+  // через вызов дополнительных функций при успешной/неуспешной отправке
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.upload(new FormData(form), successHandler, errorHandler);
+  });
+
   window.form = {
     syncRoomsGuests: syncRoomsGuests,
-    putMainPinPositionToAddress: putMainPinPositionToAddress
+    putMainPinPositionToAddress: putMainPinPositionToAddress,
+    errorHandler: errorHandler
   };
 })();
 

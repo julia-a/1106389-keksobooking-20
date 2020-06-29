@@ -66,9 +66,9 @@
   };
 
   var clickPins = function (arrData) {
-    var mapPinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < mapPinElements.length; i++) {
-      subscribeClick(mapPinElements[i], arrData[i]);
+    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pinElements.length; i++) {
+      subscribeClick(pinElements[i], arrData[i]);
     }
   };
 
@@ -79,22 +79,13 @@
     clickPins(arrData);
   };
 
-  // Функция обработки ошибок при загрузке данных с сервера,
-  // через добавление сообщения в имеющийся в разметке шаблон/template
-  var errorHandler = function (errorMessage) {
-    var template = document.querySelector('#error');
-    var message = template.content.querySelector('.error__message');
-    message.textContent = errorMessage;
-    document.body.appendChild(template.content.cloneNode(true));
-  };
-
   // Функция активации страницы
   var activatePage = function () {
     map.classList.remove('map--faded');
     removeDisabledAttribute(fieldset);
     startMainPinPosition();
     form.classList.remove('ad-form--disabled');
-    window.backend.load(successHandler, errorHandler);
+    window.backend.load(successHandler, window.form.errorHandler);
     window.form.syncRoomsGuests();
   };
 
@@ -112,10 +103,22 @@
     }
   });
 
+  // Функция удаления пинов из разметки (за исключением главной метки)
+  var deletePins = function () {
+    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pinElements.length; i++) {
+      pinElements[i].remove();
+    }
+  };
+
   // Функция для перевода страницы в неактивное состояние
   var deactivatePage = function () {
-    map.classList.add('map--faded'); // Деактивируем карту
-    addDisabledAttribute(fieldset);
+    deletePins(); // Удаляет пины
+    form.reset(); // Очищает данные формы
+    startMainPinPosition(); // Выводит координаты основной метки в форму (в поле Адрес)
+    map.classList.add('map--faded'); // Деактивирует карту
+    addDisabledAttribute(fieldset); // Отключает элементы управления формы
+    form.classList.add('ad-form--disabled'); // Деактивирует форму
   };
 
   // Функция реализующая передвижение главной метки (mainPin) по карте
@@ -179,4 +182,6 @@
     deactivatePage: deactivatePage
   };
 })();
+
+
 
