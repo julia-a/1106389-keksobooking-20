@@ -21,7 +21,23 @@
     pinsContainer.appendChild(fragment);
   };
 
+  // Функция с обработчиком события клика на метку.
+  // Вызывает показ карточки объявления с соответствующими данными
+  var subscribeClick = function (element, advert) {
+    element.addEventListener('click', function () {
+      window.card.renderMapPopup(advert);
+    });
+  };
+
+  var clickPins = function (arrData) {
+    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    for (var i = 0; i < pinElements.length; i++) {
+      subscribeClick(pinElements[i], arrData[i]);
+    }
+  };
+
   window.pin = {
-    renderPins: renderPins
+    renderPins: renderPins,
+    clickPins: clickPins
   };
 })();

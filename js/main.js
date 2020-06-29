@@ -57,35 +57,13 @@
     }
   };
 
-  // Функция с обработчиком события клика на метку.
-  // Вызывает показ карточки объявления с соответствующими данными
-  var subscribeClick = function (element, advert) {
-    element.addEventListener('click', function () {
-      window.card.renderMapPopup(advert);
-    });
-  };
-
-  var clickPins = function (arrData) {
-    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pinElements.length; i++) {
-      subscribeClick(pinElements[i], arrData[i]);
-    }
-  };
-
-  // Функция "успешного поведения" при загрузке данных с сервера.
-  // Ренедерит метки и по клику на метку показывает объявление
-  var successHandler = function (arrData) {
-    window.pin.renderPins(arrData);
-    clickPins(arrData);
-  };
-
   // Функция активации страницы
   var activatePage = function () {
     map.classList.remove('map--faded');
     removeDisabledAttribute(fieldset);
     startMainPinPosition();
     form.classList.remove('ad-form--disabled');
-    window.backend.load(successHandler, window.form.errorHandler);
+    window.backend.load(window.backend.successHandlerForLoad, window.backend.errorHandler);
     window.form.syncRoomsGuests();
   };
 
@@ -182,6 +160,3 @@
     deactivatePage: deactivatePage
   };
 })();
-
-
-

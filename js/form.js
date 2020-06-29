@@ -2,7 +2,6 @@
 (function () {
   var MIN_TITLE_LENGTH = 30;
   var MAX_TITLE_LENGTH = 100;
-  var main = document.querySelector('main');
   var form = document.querySelector('.ad-form');
   var offerTitle = form.querySelector('#title');
   var offerAddress = form.querySelector('#address');
@@ -45,17 +44,17 @@
     var valueLength = offerTitle.value.length;
     if (valueLength < MIN_TITLE_LENGTH) {
       offerTitle.reportValidity();
-      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) +' символов');
+      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' символов');
     } else if (valueLength > MAX_TITLE_LENGTH) {
       offerTitle.reportValidity();
-      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) +' символов');
+      offerTitle.setCustomValidity('Введите ещё ' + (MIN_TITLE_LENGTH - valueLength) + ' символов');
     } else {
       offerTitle.setCustomValidity(''); // Передает пустую строку, что означает что поле заполнено правильно
     }
   });
 
-   // Ставим стартовые координаты в поле «Адрес»
-   var putMainPinPositionToAddress = function (x, y) {
+  // Ставим стартовые координаты в поле «Адрес»
+  var putMainPinPositionToAddress = function (x, y) {
     offerAddress.value = x + ', ' + y;
   };
 
@@ -71,7 +70,7 @@
       case '14:00':
         chcekOutValue.value = chcekInValue.value;
         break;
-    };
+    }
   };
   offerChcekIn.addEventListener('change', function () {
     syncCheckInOut(offerChcekIn, offerChcekOut);
@@ -163,56 +162,16 @@
   };
   offerRoomNumber.addEventListener('change', syncRoomsGuests);
 
-  var successTemplate = document.querySelector('#success').content.querySelector('.success');
-  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-  var successPopup = successTemplate.cloneNode(true);
-  var errorPopup = errorTemplate.cloneNode(true);
-
-  // Функция "успешного поведения" при отправке данных из формы на сервер
-  // Показывает окно об успешной отправке, а затем запускает функцию деактивации страницы
-  var successHandler = function () {
-    main.appendChild(successPopup);
-    window.main.deactivatePage();
-  };
-
-  successPopup.addEventListener('click', function () {
-    successPopup.style.display = 'none';
-  });
-
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      successPopup.style.display = 'none';
-      errorPopup.style.display = 'none';
-    }
-  });
-
-  var errorHandler = function (errorMessage) {
-    var message = errorPopup.querySelector('.error__message');
-    message.textContent = errorMessage;
-    main.appendChild(errorPopup);
-  };
-
-  errorPopup.addEventListener('click', function () {
-    errorPopup.style.display = 'none';
-  });
-
-  var errorBtn = errorPopup.querySelector('.error__button');
-  errorBtn.addEventListener('click', function () {
-    errorPopup.style.display = 'none';
-  });
-
   // Отправка данных из формы на сервер и обработка этого события,
   // через вызов дополнительных функций при успешной/неуспешной отправке
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.upload(new FormData(form), successHandler, errorHandler);
+    window.backend.upload(new FormData(form), window.backend.successHandlerForUpload, window.backend.errorHandler);
   });
 
-  
   window.form = {
     syncRoomsGuests: syncRoomsGuests,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
-    errorHandler: errorHandler
   };
 })();
 
