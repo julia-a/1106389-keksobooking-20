@@ -208,6 +208,7 @@
     window.backend.upload(new FormData(form), successHandler, errorHandler);
   });
 
+  
   window.form = {
     syncRoomsGuests: syncRoomsGuests,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
