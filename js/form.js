@@ -4,6 +4,7 @@
   var MAX_TITLE_LENGTH = 100;
   var form = document.querySelector('.ad-form');
   var offerTitle = form.querySelector('#title');
+  var offerAddress = form.querySelector('#address');
   var offerChcekIn = form.querySelector('#timein');
   var offerChcekOut = form.querySelector('#timeout');
   var offerPriceForNight = form.querySelector('#price');
@@ -53,6 +54,11 @@
       offerTitle.setCustomValidity(''); // Передает пустую строку, что означает что поле заполнено правильно
     }
   });
+
+   // Ставим стартовые координаты в поле «Адрес»
+   var putMainPinPositionToAddress = function (x, y) {
+    offerAddress.value = x + ', ' + y;
+  };
 
   // Синхронизация полей «Время заезда и выезда»
   var syncCheckInOut = function (chcekInValue, chcekOutValue) {
@@ -159,6 +165,8 @@
   offerRoomNumber.addEventListener('change', syncRoomsGuests);
 
   window.form = {
-    syncRoomsGuests: syncRoomsGuests
+    syncRoomsGuests: syncRoomsGuests,
+    putMainPinPositionToAddress: putMainPinPositionToAddress
   };
 })();
+
