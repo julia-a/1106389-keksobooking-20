@@ -3,6 +3,7 @@
   var SERVER_URL = 'https://javascript.pages.academy/keksobooking';
   var STATUS_SUCCES = 200;
   var TIMEOUT = 10000;
+  var main = document.querySelector('main');
 
   var setup = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
@@ -41,13 +42,6 @@
     xhr.send(data);
   };
 
-  var main = document.querySelector('main');
-  var successTemplate = document.querySelector('#success').content.querySelector('.success');
-  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
-  var successPopup = successTemplate.cloneNode(true);
-  var errorPopup = errorTemplate.cloneNode(true);
-
-
   // Функция "успешного поведения" при загрузке данных с сервера.
   // Ренедерит метки и по клику на метку показывает объявление
   var successHandlerForLoad = function (arrData) {
@@ -56,38 +50,68 @@
   };
 
   // Функция "успешного поведения" при отправке данных из формы на сервер
-  // Показывает окно об успешной отправке, а затем запускает функцию деактивации страницы
+  // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
   var successHandlerForUpload = function () {
-    main.appendChild(successPopup);
+    onSuccess();
     window.main.deactivatePage();
   };
 
-  successPopup.addEventListener('click', function () {
-    successPopup.style.display = 'none';
-  });
+  var onSuccess = function () {
+    var successTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
 
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      successPopup.style.display = 'none';
-      errorPopup.style.display = 'none';
-    }
-  });
+    var removeSuccessMessage = function () {
+      successTemplate.remove();
+      document.removeEventListener('keydown', onSuccessMessageEscPress);
+      document.removeEventListener('click', onSuccessMessageClick);
+    };
 
-  // Функция, создающая окно с сообщением об ошибке
-  var errorHandler = function (errorMessage) {
-    var message = errorPopup.querySelector('.error__message');
-    message.textContent = errorMessage;
-    main.appendChild(errorPopup);
+    var onSuccessMessageEscPress = function (evt) {
+      if (evt.key === window.data.escape) {
+        removeSuccessMessage();
+      }
+    };
+
+    var onSuccessMessageClick = function () {
+      removeSuccessMessage();
+    };
+
+    main.appendChild(successTemplate);
+    document.addEventListener('keydown', onSuccessMessageEscPress);
+    document.addEventListener('click', onSuccessMessageClick);
   };
 
-  errorPopup.addEventListener('click', function () {
-    errorPopup.style.display = 'none';
-  });
+  // Функция, обрабатывающая ситуацию возникновения ошибки
+  var errorHandler = function (errorMessage) {
+    onError(errorMessage);
+  };
 
-  var errorButton = errorPopup.querySelector('.error__button');
-  errorButton.addEventListener('click', function () {
-    errorPopup.style.display = 'none';
-  });
+  var onError = function (errorMessage) {
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+    var message = errorTemplate.querySelector('.error__message');
+
+    var errorButton = errorTemplate.querySelector('.error__button');
+    var removeErrorMessage = function () {
+      errorTemplate.remove();
+      document.removeEventListener('keydown', onErrorMessageEscPress);
+      document.removeEventListener('click', onErrorMessageClick);
+    };
+
+    var onErrorMessageEscPress = function (evt) {
+      if (evt.key === 'Escape') {
+        removeErrorMessage();
+      }
+    };
+
+    var onErrorMessageClick = function () {
+      removeErrorMessage();
+    };
+
+    message.textContent = errorMessage;
+    main.appendChild(errorTemplate);
+    errorButton.addEventListener('click', onErrorMessageClick);
+    document.addEventListener('keydown', onErrorMessageEscPress);
+    document.addEventListener('mousedown', onErrorMessageClick);
+  };
 
   window.backend = {
     load: load,
