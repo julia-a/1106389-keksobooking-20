@@ -30,6 +30,7 @@
   var offerRoomNumber = form.querySelector('#room_number');
   var numberOfRooms = form.elements.rooms;
   var numberOfBeds = form.elements.capacity;
+  var resetButton = form.querySelector('.ad-form__reset');
 
   // Валидация поля «Заголовок»
   offerTitle.addEventListener('invalid', function () {
@@ -169,9 +170,12 @@
     window.backend.upload(new FormData(form), window.backend.successHandlerForUpload, window.backend.errorHandler);
   });
 
+  // Перевод страницы в неактивное состояние при клике на кнопку формы - "Очистить"
+  resetButton.addEventListener('click', window.main.deactivatePage);
+
   window.form = {
     syncRoomsGuests: syncRoomsGuests,
-    putMainPinPositionToAddress: putMainPinPositionToAddress,
+    putMainPinPositionToAddress: putMainPinPositionToAddress
   };
 })();
 
