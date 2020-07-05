@@ -18,7 +18,7 @@
     return housingType.value === DEFAULT_VALUE ? true : advert.offer.type === housingType.value;
   };
 
-  var filtrate = function () {
+  var getFilterData = function () {
     adverts = advertsData.slice(0);
     adverts = adverts.filter(function (advert) {
       return getHousingType(advert);
@@ -33,7 +33,7 @@
   };
 
   var reload = window.debounce(function () {
-    filtrate();
+    getFilterData();
     removePopup();
     window.main.deletePins();
     window.pin.renderPins(adverts);
