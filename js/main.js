@@ -56,7 +56,8 @@
     startMainPinPosition();
     form.classList.remove('ad-form--disabled');
     window.backend.load(window.filters.successHandlerForLoad, window.backend.errorHandler);
-    window.form.syncRoomsGuests();
+    window.form.syncRoomsGuests(); // Синхронизирует поля кол-во комнат/кол-во мест
+    window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
@@ -89,8 +90,8 @@
     map.classList.add('map--faded'); // Деактивирует карту
     toggleDisabledElements(formElements, true); // Отключает элементы управления формы
     toggleDisabledElements(filtersElements, true); // Отключает элементы управления фильтра
-    window.photo.removeImages(); // Сбрасывает аватар и фотографии объекта к текущему объявлению
-    // на состояние по умолчанию
+    window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
+    window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму
   };
 
