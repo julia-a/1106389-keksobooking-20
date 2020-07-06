@@ -42,13 +42,6 @@
     xhr.send(data);
   };
 
-  // Функция "успешного поведения" при загрузке данных с сервера.
-  // Ренедерит метки и по клику на метку показывает объявление
-  var successHandlerForLoad = function (arrData) {
-    window.pin.renderPins(arrData);
-    window.pin.clickPins(arrData);
-  };
-
   // Функция "успешного поведения" при отправке данных из формы на сервер
   // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
   var successHandlerForUpload = function () {
@@ -116,7 +109,6 @@
   window.backend = {
     load: load,
     upload: upload,
-    successHandlerForLoad: successHandlerForLoad,
     successHandlerForUpload: successHandlerForUpload,
     errorHandler: errorHandler
   };

@@ -3,6 +3,17 @@
   var advertTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
 
+  // Вспомогательная функция, перевод на русский типа объекта
+  var translateTypeOfPlace = function (englishType) {
+    var translate = {
+      palace: 'Дворец',
+      flat: 'Квартира',
+      house: 'Дом',
+      bungalo: 'Бунгало'
+    };
+    return translate[englishType];
+  };
+
   // Перед созданием карточки объявления проверяем, не создана ли до этого другая карточка,
   // если да - то предыдущую карточку удаляем
   var removePopup = function () {
@@ -20,7 +31,7 @@
     cardElement.querySelector('.popup__title').textContent = advert.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = advert.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = advert.offer.price + ' ₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = advert.offer.type;
+    cardElement.querySelector('.popup__type').textContent = translateTypeOfPlace(advert.offer.type);
     cardElement.querySelector('.popup__text--capacity').textContent = advert.offer.rooms + ' комнаты для ' + advert.offer.guests + ' гостей';
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + advert.offer.checkin + ', выезд до ' + advert.offer.checkout;
     cardElement.querySelector('.popup__features').textContent = advert.offer.description;

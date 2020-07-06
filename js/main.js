@@ -8,9 +8,10 @@
     MIN_Y: 130,
     MAX_Y: 630
   };
-
+  var form = document.querySelector('.ad-form');
+  var formElements = form.querySelectorAll('fieldset');
+  var filtersElements = document.querySelectorAll('[name^=housing-]');
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
-
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
     X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
@@ -20,8 +21,6 @@
     X: rect.width - PinSetting.HALF_WIDTH,
     Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT
   };
-  var form = document.querySelector('.ad-form');
-  var fieldset = document.querySelectorAll('fieldset');
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
   var isActive = false;
@@ -41,34 +40,27 @@
     window.form.putMainPinPositionToAddress(x, y);
   };
 
-  // Функция отключения элементов управления формы, через поиск всех тегов fieldset
-  // на странице index.html и добавления им атрибута disabled
-  var addDisabledAttribute = function (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      arr[i].disabled = true;
-    }
+  var toggleDisabledElements = function (elements, value) {
+    elements.forEach(function (element) {
+      element.disabled = value;
+    });
   };
-  addDisabledAttribute(fieldset);
-
-  // Функция удаления атрибута disabled
-  var removeDisabledAttribute = function (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      arr[i].disabled = false;
-    }
-  };
+  toggleDisabledElements(formElements, true);
+  toggleDisabledElements(filtersElements, true);
 
   // Функция активации страницы
   var activatePage = function () {
     map.classList.remove('map--faded');
-    removeDisabledAttribute(fieldset);
+    toggleDisabledElements(formElements, false);
+    toggleDisabledElements(filtersElements, false);
     startMainPinPosition();
     form.classList.remove('ad-form--disabled');
-    window.backend.load(window.backend.successHandlerForLoad, window.backend.errorHandler);
+    window.backend.load(window.filters.successHandlerForLoad, window.backend.errorHandler);
     window.form.syncRoomsGuests();
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
-  mainPin.addEventListener('mouseup', function (evt) {
+  mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === 1) {
       activatePage();
     }
@@ -84,9 +76,9 @@
   // Функция удаления пинов из разметки (за исключением главной метки)
   var deletePins = function () {
     var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pinElements.length; i++) {
-      pinElements[i].remove();
-    }
+    pinElements.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   // Функция для перевода страницы в неактивное состояние
@@ -95,11 +87,14 @@
     form.reset(); // Очищает данные формы
     startMainPinPosition(); // Выводит координаты основной метки в форму (в поле Адрес)
     map.classList.add('map--faded'); // Деактивирует карту
-    addDisabledAttribute(fieldset); // Отключает элементы управления формы
+    toggleDisabledElements(formElements, true); // Отключает элементы управления формы
+    toggleDisabledElements(filtersElements, true); // Отключает элементы управления фильтра
+    window.photo.removeImages(); // Сбрасывает аватар и фотографии объекта к текущему объявлению
+    // на состояние по умолчанию
     form.classList.add('ad-form--disabled'); // Деактивирует форму
   };
 
-  // Функция реализующая передвижение главной метки (mainPin) по карте
+  // Функция, реализующая передвижение главной метки (mainPin) по карте
   mainPin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
@@ -157,6 +152,7 @@
   });
 
   window.main = {
+    deletePins: deletePins,
     deactivatePage: deactivatePage
   };
 })();

@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var NUMBER_ADVERTS = 5;
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var pinsContainer = document.querySelector('.map__pins');
 
@@ -13,10 +14,12 @@
     return pinItem;
   };
 
-  var renderPins = function (pins) {
+  var renderPins = function (advertsArr) {
+    var advertsNumber = advertsArr.length > NUMBER_ADVERTS ? NUMBER_ADVERTS : advertsArr.length;
+
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(createPin(pins[i], i));
+    for (var i = 0; i < advertsNumber; i++) {
+      fragment.appendChild(createPin(advertsArr[i]));
     }
     pinsContainer.appendChild(fragment);
   };
