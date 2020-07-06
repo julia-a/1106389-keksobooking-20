@@ -19,7 +19,6 @@
   var housingGuests = document.querySelector('#housing-guests');
   var housingFeatures = document.querySelector('#housing-features');
 
-
   // Функция "успешного поведения" при загрузке данных с сервера.
   // Ренедерит метки с учётом выбранного фильтра
   var successHandlerForLoad = function (data) {
@@ -65,7 +64,7 @@
   var getFilterData = function () {
     adverts = advertsData.slice(0);
     adverts = adverts.filter(function (advert) {
-      return getHousingType(advert) && getHousingPrice(advert) && getHousingRooms(advert) && getHousingGuests(advert) && getHousingFeatures(advert)
+      return getHousingType(advert) && getHousingPrice(advert) && getHousingRooms(advert) && getHousingGuests(advert) && getHousingFeatures(advert);
     });
   };
 
