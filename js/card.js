@@ -67,7 +67,6 @@
     }
   };
 
-
   // Создание массива фотографий
   var renderPhotos = function (popupPhotos, photos) {
     var firstImage = popupPhotos.querySelector('.popup__photo');

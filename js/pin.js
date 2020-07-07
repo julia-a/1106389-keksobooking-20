@@ -24,30 +24,6 @@
     pinsContainer.appendChild(fragment);
   };
 
-  // Вариант - 1
-  // var renderPins = function (advertsArr) {
-  //   var advertsNumber = advertsArr.length > NUMBER_ADVERTS ? NUMBER_ADVERTS : advertsArr.length;
-
-  //   var fragment = document.createDocumentFragment();
-  //   advertsNumber.forEach(function (advert) {
-  //     fragment.appendChild(createPin(advert));
-  //   });
-
-  //   pinsContainer.appendChild(fragment);
-  // };
-
-  // Вариант - 2
-  // var renderPins = function (advertsArr) {
-  //   var advertsNumber = advertsArr.length > NUMBER_ADVERTS ? NUMBER_ADVERTS : advertsArr.length;
-
-  //   var fragment = document.createDocumentFragment();
-  //   advertsArr.forEach(function (advert) {
-  //     fragment.appendChild(createPin(advert));
-  //   });
-
-  //   pinsContainer.appendChild(fragment);
-  // };
-
   // Функция с обработчиком события клика на метку.
   // Вызывает показ карточки объявления с соответствующими данными
   var subscribeClick = function (element, advert) {
