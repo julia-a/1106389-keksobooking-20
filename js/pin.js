@@ -24,6 +24,30 @@
     pinsContainer.appendChild(fragment);
   };
 
+  // Вариант - 1
+  // var renderPins = function (advertsArr) {
+  //   var advertsNumber = advertsArr.length > NUMBER_ADVERTS ? NUMBER_ADVERTS : advertsArr.length;
+
+  //   var fragment = document.createDocumentFragment();
+  //   advertsNumber.forEach(function (advert) {
+  //     fragment.appendChild(createPin(advert));
+  //   });
+
+  //   pinsContainer.appendChild(fragment);
+  // };
+
+  // Вариант - 2
+  // var renderPins = function (advertsArr) {
+  //   var advertsNumber = advertsArr.length > NUMBER_ADVERTS ? NUMBER_ADVERTS : advertsArr.length;
+
+  //   var fragment = document.createDocumentFragment();
+  //   advertsArr.forEach(function (advert) {
+  //     fragment.appendChild(createPin(advert));
+  //   });
+
+  //   pinsContainer.appendChild(fragment);
+  // };
+
   // Функция с обработчиком события клика на метку.
   // Вызывает показ карточки объявления с соответствующими данными
   var subscribeClick = function (element, advert) {
@@ -33,10 +57,10 @@
   };
 
   var clickPins = function (arrData) {
-    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pinElements.length; i++) {
-      subscribeClick(pinElements[i], arrData[i]);
-    }
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (pin) {
+      subscribeClick(pin, arrData);
+    });
   };
 
   window.pin = {

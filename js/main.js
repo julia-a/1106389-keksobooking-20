@@ -9,8 +9,8 @@
     MAX_Y: 630
   };
   var form = document.querySelector('.ad-form');
-  var formElements = form.querySelectorAll('fieldset');
-  var filtersElements = document.querySelectorAll('[name^=housing-]');
+  var formFieldsets = form.querySelectorAll('fieldset');
+  var formFilters = document.querySelectorAll('[name^=housing-]');
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
@@ -40,19 +40,19 @@
     window.form.putMainPinPositionToAddress(x, y);
   };
 
-  var toggleDisabledElements = function (elements, value) {
+  var toggleDisabled = function (elements, value) {
     elements.forEach(function (element) {
       element.disabled = value;
     });
   };
-  toggleDisabledElements(formElements, true);
-  toggleDisabledElements(filtersElements, true);
+  toggleDisabled(formFieldsets, true);
+  toggleDisabled(formFilters, true);
 
   // Функция активации страницы
   var activatePage = function () {
     map.classList.remove('map--faded');
-    toggleDisabledElements(formElements, false);
-    toggleDisabledElements(filtersElements, false);
+    toggleDisabled(formFieldsets, false);
+    toggleDisabled(formFilters, false);
     startMainPinPosition();
     form.classList.remove('ad-form--disabled');
     window.backend.load(window.filters.successHandlerForLoad, window.backend.errorHandler);
@@ -76,8 +76,8 @@
 
   // Функция удаления пинов из разметки (за исключением главной метки)
   var deletePins = function () {
-    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pinElements.forEach(function (pin) {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (pin) {
       pin.remove();
     });
   };
@@ -88,8 +88,8 @@
     form.reset(); // Очищает данные формы
     startMainPinPosition(); // Выводит координаты основной метки в форму (в поле Адрес)
     map.classList.add('map--faded'); // Деактивирует карту
-    toggleDisabledElements(formElements, true); // Отключает элементы управления формы
-    toggleDisabledElements(filtersElements, true); // Отключает элементы управления фильтра
+    toggleDisabled(formFieldsets, true); // Отключает элементы управления формы
+    toggleDisabled(formFilters, true); // Отключает элементы управления фильтра
     window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
     window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму

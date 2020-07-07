@@ -69,13 +69,13 @@
   };
 
   var removePopup = function () {
-    var cardElement = document.querySelector('.map__card');
-    if (cardElement) {
-      cardElement.remove();
+    var cardTemplate = document.querySelector('.map__card');
+    if (cardTemplate) {
+      cardTemplate.remove();
     }
   };
 
-  var reload = window.debounce(function () {
+  var updateFilterData = window.debounce(function () {
     getFilterData();
     removePopup();
     window.main.deletePins();
@@ -83,7 +83,7 @@
     window.pin.clickPins(adverts);
   });
 
-  mapFilters.addEventListener('change', reload);
+  mapFilters.addEventListener('change', updateFilterData);
 
   window.filters = {
     successHandlerForLoad: successHandlerForLoad
