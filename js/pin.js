@@ -33,10 +33,10 @@
   };
 
   var clickPins = function (arrData) {
-    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = 0; i < pinElements.length; i++) {
-      subscribeClick(pinElements[i], arrData[i]);
-    }
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (pin, index) {
+      subscribeClick(pin, arrData[index]);
+    });
   };
 
   window.pin = {

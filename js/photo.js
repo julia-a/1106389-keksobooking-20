@@ -1,58 +1,94 @@
 'use strict';
 (function () {
-  var DEFAULT_SRC_AVATAR = 'img/muffin-grey.svg';
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var avatarChooser = document.querySelector('.ad-form-header__input');
-  var previewAvatar = document.querySelector('.ad-form-header__preview img');
-  var photoChooser = document.querySelector('.ad-form__input');
-  var previewPhoto = document.querySelector('.ad-form__photo');
+  var FILE_TYPES = ['jpg', 'jpeg', 'png'];
+  var DEFAULT_AVATAR = 'img/muffin-grey.svg';
+  var avatarLoader = document.querySelector('#avatar');
+  var avatarPreview = document.querySelector('.ad-form-header__preview img');
+  var photoLoader = document.querySelector('#images');
+  var photoContainer = document.querySelector('.ad-form__photo-container');
+  var firstPhotoWrapper = document.querySelector('.ad-form__photo');
 
-  avatarChooser.addEventListener('change', function () {
-    var file = avatarChooser.files[0];
-    var fileName = file.name.toLowerCase();
+  var Photo = {
+    WIDTH: '70px',
+    HEIGHT: '70px'
+  };
 
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+  var onAvatarChange = function (evt) {
+    loadImage(evt.target, changeAvatar);
+  };
 
-    if (matches) {
-      var reader = new FileReader();
+  var onPhotoChange = function (evt) {
+    loadImage(evt.target, addPhoto);
+  };
 
-      reader.addEventListener('load', function () {
-        previewAvatar.src = reader.result;
-      });
-      reader.readAsDataURL(file);
+  var changeAvatar = function (avatar) {
+    avatarPreview.src = avatar;
+  };
+
+  var createPhoto = function (photo) {
+    var newPhoto = document.createElement('img');
+    newPhoto.src = photo;
+    newPhoto.style.width = Photo.WIDTH;
+    newPhoto.style.height = Photo.HEIGHT;
+    newPhoto.alt = 'Фотография жилья';
+    return newPhoto;
+  };
+
+  var addPhoto = function (photo) {
+    if (firstPhotoWrapper.querySelector('img')) {
+      var newPhotoWrapper = document.createElement('div');
+      newPhotoWrapper.classList.add('ad-form__photo');
+      newPhotoWrapper.classList.add('ad-form__photo--added');
+      newPhotoWrapper.appendChild(createPhoto(photo));
+      photoContainer.appendChild(newPhotoWrapper);
+    } else {
+      firstPhotoWrapper.appendChild(createPhoto(photo));
     }
-  });
+  };
 
-  photoChooser.addEventListener('change', function () {
-    var file = photoChooser.files[0];
-    var fileName = file.name.toLowerCase();
-
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        var photo = document.createElement('img');
-        photo.setAttribute('width', '70px');
-        photo.setAttribute('height', '70px');
-        photo.src = reader.result;
-        previewPhoto.appendChild(photo);
+  var loadImage = function (imageLoader, addImage) {
+    var imageFiles = Array.from(imageLoader.files);
+    if (imageFiles) {
+      imageFiles.forEach(function (file) {
+        var imageFileName = file.name.toLowerCase();
+        var matches = FILE_TYPES.some(function (type) {
+          return imageFileName.endsWith(type);
+        });
+        if (matches) {
+          var reader = new FileReader();
+          reader.addEventListener('load', function (evt) {
+            addImage(evt.target.result);
+          });
+          reader.readAsDataURL(file);
+        }
       });
-      reader.readAsDataURL(file);
     }
-  });
+  };
+
+  var cleanImages = function () {
+    avatarPreview.src = DEFAULT_AVATAR;
+    var addedPhotos = document.querySelectorAll('.ad-form__photo--added');
+    if (addedPhotos) {
+      addedPhotos.forEach(function (photo) {
+        photo.remove();
+      });
+      firstPhotoWrapper.innerHTML = '';
+    }
+  };
+
+  var changeImages = function () {
+    avatarLoader.addEventListener('change', onAvatarChange);
+    photoLoader.addEventListener('change', onPhotoChange);
+  };
 
   var removeImages = function () {
-    previewAvatar.src = DEFAULT_SRC_AVATAR;
-    previewPhoto.textContent = '';
+    avatarLoader.removeEventListener('change', onAvatarChange);
+    photoLoader.removeEventListener('change', onPhotoChange);
   };
 
   window.photo = {
+    cleanImages: cleanImages,
+    changeImages: changeImages,
     removeImages: removeImages
   };
 })();

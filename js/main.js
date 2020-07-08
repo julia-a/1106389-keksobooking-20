@@ -1,82 +1,55 @@
 'use strict';
 (function () {
-  var PinSetting = {
-    HALF_WIDTH: 33,
-    HALF_HEIGHT: 33,
-    MIN_X: 0,
-    MAX_X: 600,
-    MIN_Y: 130,
-    MAX_Y: 630
-  };
+  var PIN_WIDTH = 66;
+  var PIN_HEIGHT = 86;
+  var UNACTIVE_PIN_COORDS = '603, 408';
+  var MAIN_PIN_LEFT = '575px';
+  var MAIN_PIN_TOP = '375px';
+  var HALF_PIN_WIDTH = PIN_WIDTH / 2;
+  var MAP_TOP = 130 - PIN_HEIGHT;
+  var MAP_RIGHT = 1200 - HALF_PIN_WIDTH;
+  var MAP_BOTTOM = 1200 - 630 - PIN_HEIGHT;
+  var MAP_LEFT =  0 - HALF_PIN_WIDTH;
   var form = document.querySelector('.ad-form');
-  var formElements = form.querySelectorAll('fieldset');
-  var filtersElements = document.querySelectorAll('[name^=housing-]');
-  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
-  // Границы доступной области для перемещения метки
-  var MIN_COORD = {
-    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT
-  };
-  var MAX_COORD = {
-    X: rect.width - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT
-  };
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
-  var isActive = false;
+  var formFieldsets = form.querySelectorAll('fieldset');
+  var formFilters = document.querySelectorAll('[name^=housing-]');
+  var addressInput = form.querySelector('input[name=address]');
 
-  // Стартовые координаты главной метки
-  var startMainPinPosition = function () {
-    var x = 0;
-    var y = 0;
-
-    if (isActive) {
-      x = mainPin.offsetLeft + PinSetting.HALF_HEIGHT;
-      y = mainPin.offsetTop + PinSetting.HALF_HEIGHT + PinSetting.TAIL_HEIGHT;
-    } else {
-      x = mainPin.offsetLeft + PinSetting.HALF_WIDTH;
-      y = mainPin.offsetTop + PinSetting.HALF_HEIGHT;
-    }
-    window.form.putMainPinPositionToAddress(x, y);
-  };
-
-  var toggleDisabledElements = function (elements, value) {
-    elements.forEach(function (element) {
-      element.disabled = value;
-    });
-  };
-  toggleDisabledElements(formElements, true);
-  toggleDisabledElements(filtersElements, true);
+  addressInput.value = UNACTIVE_PIN_COORDS;
+  window.data.toggleDisabled(formFieldsets, true);
+  window.data.toggleDisabled(formFilters, true);
 
   // Функция активации страницы
   var activatePage = function () {
     map.classList.remove('map--faded');
-    toggleDisabledElements(formElements, false);
-    toggleDisabledElements(filtersElements, false);
-    startMainPinPosition();
+    window.data.toggleDisabled(formFieldsets, false);
+    window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
     window.backend.load(window.filters.successHandlerForLoad, window.backend.errorHandler);
-    window.form.syncRoomsGuests();
+    window.form.syncRoomsGuests(); // Синхронизирует поля кол-во комнат/кол-во мест
+    window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
-    if (evt.which === 1) {
+    if (evt.which === window.data.keyMouseLeft) {
       activatePage();
     }
   });
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
   mainPin.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === window.data.enter) {
       activatePage();
     }
   });
 
   // Функция удаления пинов из разметки (за исключением главной метки)
   var deletePins = function () {
-    var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pinElements.forEach(function (pin) {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pins.forEach(function (pin) {
       pin.remove();
     });
   };
@@ -85,12 +58,14 @@
   var deactivatePage = function () {
     deletePins(); // Удаляет пины
     form.reset(); // Очищает данные формы
-    startMainPinPosition(); // Выводит координаты основной метки в форму (в поле Адрес)
+    mainPin.style.left = MAIN_PIN_LEFT;
+    mainPin.style.top = MAIN_PIN_TOP;
+    addressInput.value = UNACTIVE_PIN_COORDS;
     map.classList.add('map--faded'); // Деактивирует карту
-    toggleDisabledElements(formElements, true); // Отключает элементы управления формы
-    toggleDisabledElements(filtersElements, true); // Отключает элементы управления фильтра
-    window.photo.removeImages(); // Сбрасывает аватар и фотографии объекта к текущему объявлению
-    // на состояние по умолчанию
+    window.data.toggleDisabled(formFieldsets, true); // Отключает элементы управления формы
+    window.data.toggleDisabled(formFilters, true); // Отключает элементы управления фильтра
+    window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
+    window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму
   };
 
@@ -117,27 +92,20 @@
         y: moveEvt.clientY
       };
 
-      var coordinates = {
-        x: mainPin.offsetLeft - shift.x, // Обновляем координаты после смещения мыши
-        y: mainPin.offsetTop - shift.y
+      var getCurrentCoords = function (min, max, current) {
+        if (current > max) {
+          current = max;
+        } else if (current < min) {
+          current = min;
+        }
+        return current;
       };
 
-      if (coordinates.x < MIN_COORD.X) { // Проверяем, не заходит ли метка за рамки
-        coordinates.x = MIN_COORD.X;
-      } else if (coordinates.x > MAX_COORD.X) {
-        coordinates.x = MAX_COORD.X;
-      }
-
-      if (coordinates.y < MIN_COORD.Y) {
-        coordinates.y = MIN_COORD.Y;
-      } else if (coordinates.y > MAX_COORD.Y) {
-        coordinates.y = MAX_COORD.Y;
-      }
-
-      mainPin.style.top = coordinates.y + 'px'; // Получаем новые координаты после смещения
-      mainPin.style.left = coordinates.x + 'px';
-
-      startMainPinPosition(coordinates.x, coordinates.y);
+      var currentLeftCoord = getCurrentCoords(MAP_LEFT, MAP_RIGHT, (mainPin.offsetLeft - shift.x));
+      var currentTopCoord = getCurrentCoords(MAP_TOP, MAP_BOTTOM, (mainPin.offsetTop - shift.y));
+      mainPin.style.top = currentTopCoord + 'px';
+      mainPin.style.left = currentLeftCoord + 'px';
+      addressInput.value = (currentLeftCoord + HALF_PIN_WIDTH) + ', ' + (currentTopCoord + PIN_HEIGHT);
     };
 
     var onMouseUp = function (upEvt) {
