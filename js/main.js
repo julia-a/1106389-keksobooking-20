@@ -6,12 +6,10 @@
   var MAIN_PIN_LEFT = '575px';
   var MAIN_PIN_TOP = '375px';
   var HALF_PIN_WIDTH = PIN_WIDTH / 2;
-  var MapLimit = {
-    TOP: 130 - PIN_HEIGHT,
-    RIGHT: 1200 - HALF_PIN_WIDTH,
-    BOTTOM: 630 - PIN_HEIGHT,
-    LEFT: 0 - HALF_PIN_WIDTH
-  };
+  var MAP_TOP = 130 - PIN_HEIGHT;
+  var MAP_RIGHT = 1200 - HALF_PIN_WIDTH;
+  var MAP_BOTTOM = 1200 - 630 - PIN_HEIGHT;
+  var MAP_LEFT =  0 - HALF_PIN_WIDTH;
   var form = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');
@@ -20,20 +18,14 @@
   var addressInput = form.querySelector('input[name=address]');
 
   addressInput.value = UNACTIVE_PIN_COORDS;
-
-  var toggleDisabled = function (elements, value) {
-    elements.forEach(function (element) {
-      element.disabled = value;
-    });
-  };
-  toggleDisabled(formFieldsets, true);
-  toggleDisabled(formFilters, true);
+  window.data.toggleDisabled(formFieldsets, true);
+  window.data.toggleDisabled(formFilters, true);
 
   // Функция активации страницы
   var activatePage = function () {
     map.classList.remove('map--faded');
-    toggleDisabled(formFieldsets, false);
-    toggleDisabled(formFilters, false);
+    window.data.toggleDisabled(formFieldsets, false);
+    window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
     window.backend.load(window.filters.successHandlerForLoad, window.backend.errorHandler);
     window.form.syncRoomsGuests(); // Синхронизирует поля кол-во комнат/кол-во мест
@@ -42,14 +34,14 @@
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
-    if (evt.which === 1) {
+    if (evt.which === window.data.keyMouseLeft) {
       activatePage();
     }
   });
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
   mainPin.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
+    if (evt.key === window.data.enter) {
       activatePage();
     }
   });
@@ -70,8 +62,8 @@
     mainPin.style.top = MAIN_PIN_TOP;
     addressInput.value = UNACTIVE_PIN_COORDS;
     map.classList.add('map--faded'); // Деактивирует карту
-    toggleDisabled(formFieldsets, true); // Отключает элементы управления формы
-    toggleDisabled(formFilters, true); // Отключает элементы управления фильтра
+    window.data.toggleDisabled(formFieldsets, true); // Отключает элементы управления формы
+    window.data.toggleDisabled(formFilters, true); // Отключает элементы управления фильтра
     window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
     window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму
@@ -101,19 +93,16 @@
       };
 
       var getCurrentCoords = function (min, max, current) {
-        switch (true) {
-          case (current > max):
-            current = max;
-            break;
-          case (current < min):
-            current = min;
-            break;
+        if (current > max) {
+          current = max;
+        } else if (current < min) {
+          current = min;
         }
         return current;
       };
 
-      var currentLeftCoord = getCurrentCoords(MapLimit.LEFT, MapLimit.RIGHT, (mainPin.offsetLeft - shift.x));
-      var currentTopCoord = getCurrentCoords(MapLimit.TOP, MapLimit.BOTTOM, (mainPin.offsetTop - shift.y));
+      var currentLeftCoord = getCurrentCoords(MAP_LEFT, MAP_RIGHT, (mainPin.offsetLeft - shift.x));
+      var currentTopCoord = getCurrentCoords(MAP_TOP, MAP_BOTTOM, (mainPin.offsetTop - shift.y));
       mainPin.style.top = currentTopCoord + 'px';
       mainPin.style.left = currentLeftCoord + 'px';
       addressInput.value = (currentLeftCoord + HALF_PIN_WIDTH) + ', ' + (currentTopCoord + PIN_HEIGHT);

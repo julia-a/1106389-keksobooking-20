@@ -34,8 +34,8 @@
 
   var clickPins = function (arrData) {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pins.forEach(function (pin) {
-      subscribeClick(pin, arrData);
+    pins.forEach(function (pin, index) {
+      subscribeClick(pin, arrData[index]);
     });
   };
 

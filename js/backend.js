@@ -90,7 +90,7 @@
     };
 
     var onErrorMessageEscPress = function (evt) {
-      if (evt.key === 'Escape') {
+      if (evt.key === window.data.escape) {
         removeErrorMessage();
       }
     };

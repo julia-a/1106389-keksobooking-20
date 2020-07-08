@@ -51,7 +51,7 @@
   // Закрытие объявления по нажатию на ESC
   var onPopupEscapePress = function (evt) {
     var cardTemplate = document.querySelector('.map__card');
-    if (evt.key === 'Escape') {
+    if (evt.key === window.data.escape) {
       cardTemplate.remove();
       document.removeEventListener('keydown', onPopupEscapePress);
     }
