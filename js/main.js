@@ -9,7 +9,7 @@
   var MAP_TOP = 130 - PIN_HEIGHT;
   var MAP_RIGHT = 1200 - HALF_PIN_WIDTH;
   var MAP_BOTTOM = 1200 - 630 - PIN_HEIGHT;
-  var MAP_LEFT =  0 - HALF_PIN_WIDTH;
+  var MAP_LEFT = 0 - HALF_PIN_WIDTH;
   var form = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var mainPin = document.querySelector('.map__pin--main');

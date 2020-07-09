@@ -16,6 +16,6 @@
     enter: Key.ENTER,
     escape: Key.ESCAPE,
     keyMouseLeft: Key.MOUSE_LEFT,
-    toggleDisabled:toggleDisabled
+    toggleDisabled: toggleDisabled
   };
 })();
