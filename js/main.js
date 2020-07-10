@@ -22,27 +22,28 @@
   window.data.toggleDisabled(formFilters, true);
 
   // Функция активации страницы
-  var activatePage = function () {
+  var setActiveState = function () {
     map.classList.remove('map--faded');
     window.data.toggleDisabled(formFieldsets, false);
     window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
-    window.backend.load(window.filters.successHandlerForLoad, window.backend.errorHandler);
-    window.form.syncRoomsGuests(); // Синхронизирует поля кол-во комнат/кол-во мест
+    addressInput.value = UNACTIVE_PIN_COORDS;
+    window.backend.load(window.filters.isDataSuccess, window.backend.isDataError);
+    window.form.onRoomsAndGuestsChange(); // Синхронизирует поля кол-во комнат/кол-во мест
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === window.data.keyMouseLeft) {
-      activatePage();
+      setActiveState();
     }
   });
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.key === window.data.enter) {
-      activatePage();
+      setActiveState();
     }
   });
 
@@ -55,7 +56,7 @@
   };
 
   // Функция для перевода страницы в неактивное состояние
-  var deactivatePage = function () {
+  var setInactiveState = function () {
     deletePins(); // Удаляет пины
     form.reset(); // Очищает данные формы
     mainPin.style.left = MAIN_PIN_LEFT;
@@ -121,6 +122,6 @@
 
   window.main = {
     deletePins: deletePins,
-    deactivatePage: deactivatePage
+    setInactiveState: setInactiveState
   };
 })();

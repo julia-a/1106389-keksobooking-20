@@ -7,7 +7,6 @@
   var photoLoader = document.querySelector('#images');
   var photoContainer = document.querySelector('.ad-form__photo-container');
   var firstPhotoWrapper = document.querySelector('.ad-form__photo');
-
   var Photo = {
     WIDTH: '70px',
     HEIGHT: '70px'

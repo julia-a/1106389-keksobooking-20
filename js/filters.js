@@ -18,13 +18,14 @@
   var housingRooms = document.querySelector('#housing-rooms');
   var housingGuests = document.querySelector('#housing-guests');
   var housingFeatures = document.querySelector('#housing-features');
+  var cardTemplate = document.querySelector('.map__card');
 
   // Функция "успешного поведения" при загрузке данных с сервера.
   // Ренедерит метки с учётом выбранного фильтра
-  var successHandlerForLoad = function (data) {
+  var isDataSuccess = function (data) {
     advertsData = data;
-    window.pin.renderPins(advertsData);
-    window.pin.clickPins(advertsData);
+    window.pin.render(advertsData);
+    window.pin.click(advertsData);
   };
 
   var getHousingType = function (advert) {
@@ -69,23 +70,22 @@
   };
 
   var removePopup = function () {
-    var cardTemplate = document.querySelector('.map__card');
     if (cardTemplate) {
       cardTemplate.remove();
     }
   };
 
-  var updateFilterData = window.debounce(function () {
+  var onReload = window.debounce(function () {
     getFilterData();
     removePopup();
     window.main.deletePins();
-    window.pin.renderPins(adverts);
-    window.pin.clickPins(adverts);
+    window.pin.render(adverts);
+    window.pin.click(adverts);
   });
 
-  mapFilters.addEventListener('change', updateFilterData);
+  mapFilters.addEventListener('change', onReload);
 
   window.filters = {
-    successHandlerForLoad: successHandlerForLoad
+    isDataSuccess: isDataSuccess
   };
 })();

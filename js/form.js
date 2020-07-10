@@ -4,23 +4,27 @@
   var MAX_TITLE_LENGTH = 100;
   var form = document.querySelector('.ad-form');
   var offerTitle = form.querySelector('#title');
-  var offerChcekIn = form.querySelector('#timein');
-  var offerChcekOut = form.querySelector('#timeout');
+  var offerCheckIn = form.querySelector('#timein');
+  var offerCheckOut = form.querySelector('#timeout');
   var offerPriceForNight = form.querySelector('#price');
   var prices = {
     bungalo: {
       value: 0,
+      min: 0,
       max: 1000000
     },
     flat: {
       value: 1000,
+      min: 1000,
       max: 1000000
     },
     house: {
       value: 5000,
+      min: 5000,
       max: 1000000
     },
     palace: {
+      value: 10000,
       value: 10000,
       max: 1000000
     }
@@ -54,68 +58,70 @@
   });
 
   // Синхронизация полей «Время заезда и выезда»
-  var syncCheckInOut = function (chcekInValue, chcekOutValue) {
-    switch (chcekInValue.value) {
+  var onCheckInAndOutChange = function (checkInValue, checkOutValue) {
+    switch (checkInValue.value) {
       case '12:00':
-        chcekOutValue.value = chcekInValue.value;
+        checkOutValue.value = checkInValue.value;
         break;
       case '13:00':
-        chcekOutValue.value = chcekInValue.value;
+        checkOutValue.value = checkInValue.value;
         break;
       case '14:00':
-        chcekOutValue.value = chcekInValue.value;
+        checkOutValue.value = checkInValue.value;
         break;
     }
   };
-  offerChcekIn.addEventListener('change', function () {
-    syncCheckInOut(offerChcekIn, offerChcekOut);
+  offerCheckIn.addEventListener('change', function () {
+    onCheckInAndOutChange(offerCheckIn, offerCheckOut);
   });
-  offerChcekOut.addEventListener('change', function () {
-    syncCheckInOut(offerChcekOut, offerChcekIn);
+  offerCheckOut.addEventListener('change', function () {
+    onCheckInAndOutChange(offerCheckOut, offerCheckIn);
   });
 
   // Синхронизация полей «Тип жилья» и «Цена за ночь»
-  var syncPriceForNigth = function () {
+  var onTypeOfHousingChange = function () {
     switch (offerTypeOfHousing.value) {
       case 'bungalo':
-        offerPriceForNight.setAttribute('value', prices.bungalo.value);
-        offerPriceForNight.setAttribute('min', prices.bungalo.value);
+        offerPriceForNight.setAttribute('placeholder', prices.bungalo.value);
+        debugger
+        offerPriceForNight.setAttribute('min', prices.bungalo.min);
         offerPriceForNight.setAttribute('max', prices.bungalo.max);
         break;
       case 'flat':
-        offerPriceForNight.setAttribute('value', prices.bungalo.value);
-        offerPriceForNight.setAttribute('min', prices.bungalo.value);
-        offerPriceForNight.setAttribute('max', prices.bungalo.max);
+        offerPriceForNight.setAttribute('placeholder', prices.flat.value);
+        offerPriceForNight.setAttribute('min', prices.flat.min);
+        offerPriceForNight.setAttribute('max', prices.flat.max);
         break;
       case 'house':
-        offerPriceForNight.setAttribute('value', prices.house.value);
-        offerPriceForNight.setAttribute('min', prices.house.value);
+        offerPriceForNight.setAttribute('placeholder', prices.house.value);
+        offerPriceForNight.setAttribute('min', prices.house.min);
         offerPriceForNight.setAttribute('max', prices.house.max);
         break;
       case 'palace':
-        offerPriceForNight.setAttribute('value', prices.palace.value);
-        offerPriceForNight.setAttribute('min', prices.palace.value);
+        offerPriceForNight.setAttribute('placeholder', prices.palace.value);
+        offerPriceForNight.setAttribute('min', prices.palace.min);
         offerPriceForNight.setAttribute('max', prices.palace.max);
         break;
     }
   };
-  offerTypeOfHousing.addEventListener('change', syncPriceForNigth);
+  offerTypeOfHousing.addEventListener('change', onTypeOfHousingChange);
+
 
   // Отдельная проверка значения указанного в поле «Цена за ночь»
-  var validationPrice = function (evt) {
+  var onPriceInputChange = function (evt) {
     var inputPriceForNight = evt.target;
 
     if (inputPriceForNight.validity.rangeUnderflow) {
       offerPriceForNight.setCustomValidity('Стоимость жилья не может быть ниже рекомендованной');
-    } else if (offerPriceForNight.validity.rangeOverflow) {
+    } else if (inputPriceForNight.validity.rangeOverflow) {
       offerPriceForNight.setCustomValidity('Цена не должна превышать 1 000 000');
-    } else if (offerPriceForNight.validity.valueMissing) {
+    } else if (inputPriceForNight.validity.valueMissing) {
       offerPriceForNight.setCustomValidity('Введите, пожалуйста, цену');
     } else {
       offerPriceForNight.setCustomValidity('');
     }
   };
-  offerPriceForNight.addEventListener('invalid', validationPrice);
+  offerPriceForNight.addEventListener('invalid', onPriceInputChange);
 
   // Синхронизация полей «Количество комнат» и «Количество мест»
   var setOptionsForRoomsGuests = function () {
@@ -129,7 +135,7 @@
     }
   };
 
-  var syncRoomsGuests = function () {
+  var onRoomsAndGuestsChange = function () {
     setOptionsForRoomsGuests();
     switch (numberOfRooms.value) {
       case '1':
@@ -155,20 +161,20 @@
         break;
     }
   };
-  offerRoomNumber.addEventListener('change', syncRoomsGuests);
+  offerRoomNumber.addEventListener('change', onRoomsAndGuestsChange);
 
   // Отправка данных из формы на сервер и обработка этого события,
   // через вызов дополнительных функций при успешной/неуспешной отправке
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.upload(new FormData(form), window.backend.successHandlerForUpload, window.backend.errorHandler);
+    window.backend.upload(new FormData(form), window.backend.isFormSent, window.backend.isDataError);
   });
 
   // Перевод страницы в неактивное состояние при клике на кнопку формы - "Очистить"
-  resetButton.addEventListener('click', window.main.deactivatePage);
+  resetButton.addEventListener('click', window.main.setInactiveState);
 
   window.form = {
-    syncRoomsGuests: syncRoomsGuests
+    onRoomsAndGuestsChange: onRoomsAndGuestsChange
   };
 })();
 

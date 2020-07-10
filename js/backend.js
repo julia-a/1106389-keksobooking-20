@@ -4,6 +4,10 @@
   var STATUS_SUCCES = 200;
   var TIMEOUT = 10000;
   var main = document.querySelector('main');
+  var successTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+  var message = errorTemplate.querySelector('.error__message');
+  var errorButton = errorTemplate.querySelector('.error__button');
 
   var setup = function (onSuccess, onError) {
     var xhr = new XMLHttpRequest();
@@ -44,14 +48,12 @@
 
   // Функция "успешного поведения" при отправке данных из формы на сервер
   // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
-  var successHandlerForUpload = function () {
+  var isFormSent = function () {
     onSuccess();
-    window.main.deactivatePage();
+    window.main.setInactiveState();
   };
 
   var onSuccess = function () {
-    var successTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
-
     var removeSuccessMessage = function () {
       successTemplate.remove();
       document.removeEventListener('keydown', onSuccessMessageEscPress);
@@ -74,15 +76,11 @@
   };
 
   // Функция, обрабатывающая ситуацию возникновения ошибки
-  var errorHandler = function (errorMessage) {
+  var isDataError = function (errorMessage) {
     onError(errorMessage);
   };
 
   var onError = function (errorMessage) {
-    var errorTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-    var message = errorTemplate.querySelector('.error__message');
-
-    var errorButton = errorTemplate.querySelector('.error__button');
     var removeErrorMessage = function () {
       errorTemplate.remove();
       document.removeEventListener('keydown', onErrorMessageEscPress);
@@ -109,7 +107,7 @@
   window.backend = {
     load: load,
     upload: upload,
-    successHandlerForUpload: successHandlerForUpload,
-    errorHandler: errorHandler
+    isFormSent: isFormSent,
+    isDataError: isDataError
   };
 })();
