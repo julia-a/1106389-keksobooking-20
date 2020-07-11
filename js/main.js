@@ -28,7 +28,7 @@
     window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
     addressInput.value = UNACTIVE_PIN_COORDS;
-    window.backend.load(window.filters.isDataSuccess, window.backend.isDataError);
+    window.backend.load(window.filters.onMainPinLoad, window.backend.onDataError);
     window.form.onRoomsAndGuestsChange(); // Синхронизирует поля кол-во комнат/кол-во мест
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };

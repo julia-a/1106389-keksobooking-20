@@ -167,7 +167,7 @@
   // через вызов дополнительных функций при успешной/неуспешной отправке
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.upload(new FormData(form), window.backend.isFormSent, window.backend.isDataError);
+    window.backend.upload(new FormData(form), window.backend.onFormUpload, window.backend.onDataError);
   });
 
   // Перевод страницы в неактивное состояние при клике на кнопку формы - "Очистить"

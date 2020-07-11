@@ -48,7 +48,7 @@
 
   // Функция "успешного поведения" при отправке данных из формы на сервер
   // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
-  var isFormSent = function () {
+  var onFormUpload = function () {
     onSuccess();
     window.main.setInactiveState();
   };
@@ -76,7 +76,7 @@
   };
 
   // Функция, обрабатывающая ситуацию возникновения ошибки
-  var isDataError = function (errorMessage) {
+  var onDataError = function (errorMessage) {
     onError(errorMessage);
   };
 
@@ -107,7 +107,7 @@
   window.backend = {
     load: load,
     upload: upload,
-    isFormSent: isFormSent,
-    isDataError: isDataError
+    onFormUpload: onFormUpload,
+    onDataError: onDataError
   };
 })();

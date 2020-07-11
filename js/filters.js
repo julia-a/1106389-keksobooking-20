@@ -22,7 +22,7 @@
 
   // Функция "успешного поведения" при загрузке данных с сервера.
   // Ренедерит метки с учётом выбранного фильтра
-  var isDataSuccess = function (data) {
+  var onMainPinLoad = function (data) {
     advertsData = data;
     window.pin.render(advertsData);
     window.pin.click(advertsData);
@@ -86,6 +86,6 @@
   mapFilters.addEventListener('change', onReload);
 
   window.filters = {
-    isDataSuccess: isDataSuccess
+    onMainPinLoad: onMainPinLoad
   };
 })();
