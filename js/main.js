@@ -10,12 +10,14 @@
   var MAP_RIGHT = 1200 - HALF_PIN_WIDTH;
   var MAP_BOTTOM = 1200 - 630 - PIN_HEIGHT;
   var MAP_LEFT = 0 - HALF_PIN_WIDTH;
+  var ADVERTS = [];
   var form = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
+  var pins = document.querySelector('.map__pins');
   var mainPin = document.querySelector('.map__pin--main');
   var formFieldsets = form.querySelectorAll('fieldset');
   var formFilters = document.querySelectorAll('[name^=housing-]');
-  var addressInput = form.querySelector('input[name=address]');
+  var addressInput = form.querySelector('#address');
 
   addressInput.value = UNACTIVE_PIN_COORDS;
   window.data.toggleDisabled(formFieldsets, true);
@@ -23,15 +25,20 @@
 
   // Функция активации страницы
   var setActiveState = function () {
+    window.pin.render(ADVERTS);
     map.classList.remove('map--faded');
     window.data.toggleDisabled(formFieldsets, false);
     window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
-    addressInput.value = UNACTIVE_PIN_COORDS;
-    window.backend.load(window.filters.onMainPinLoad, window.backend.onDataError);
     window.form.onRoomsAndGuestsChange(); // Синхронизирует поля кол-во комнат/кол-во мест
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };
+
+  var onLoadSuccess = function (arrData) {
+    ADVERTS = arrData;
+  };
+
+  window.backend.load(onLoadSuccess, window.backend.onDataError);
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
@@ -47,6 +54,15 @@
     }
   });
 
+  pins.addEventListener('click', function (evt) {
+    var target = evt.target;
+    var numPin = target.parentElement.dataset.numPin;
+
+    if (numPin) {
+      window.card.renderMapPopup(ADVERTS[numPin]);
+    }
+  });
+
   // Функция удаления пинов из разметки (за исключением главной метки)
   var deletePins = function () {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -58,10 +74,11 @@
   // Функция для перевода страницы в неактивное состояние
   var setInactiveState = function () {
     deletePins(); // Удаляет пины
+    window.card.removePopup(); // Удаляет карточки объявлений
     form.reset(); // Очищает данные формы
+    addressInput.value = UNACTIVE_PIN_COORDS;
     mainPin.style.left = MAIN_PIN_LEFT;
     mainPin.style.top = MAIN_PIN_TOP;
-    addressInput.value = UNACTIVE_PIN_COORDS;
     map.classList.add('map--faded'); // Деактивирует карту
     window.data.toggleDisabled(formFieldsets, true); // Отключает элементы управления формы
     window.data.toggleDisabled(formFilters, true); // Отключает элементы управления фильтра
@@ -121,6 +138,7 @@
   });
 
   window.main = {
+    ADVERTS: ADVERTS,
     deletePins: deletePins,
     setInactiveState: setInactiveState
   };

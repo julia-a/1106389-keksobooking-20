@@ -16,28 +16,12 @@
   var renderPins = function (advertsArr) {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < Math.min(advertsArr.length, 5); i++) {
-      fragment.appendChild(createPin(advertsArr[i]));
+      fragment.appendChild(createPin(advertsArr[i], i));
     }
     pinsContainer.appendChild(fragment);
   };
 
-  // Функция с обработчиком события клика на метку.
-  // Вызывает показ карточки объявления с соответствующими данными
-  var subscribeClick = function (element, advert) {
-    element.addEventListener('click', function () {
-      window.card.renderMapPopup(advert);
-    });
-  };
-
-  var clickPins = function (arrData) {
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pins.forEach(function (pin, index) {
-      subscribeClick(pin, arrData[index]);
-    });
-  };
-
   window.pin = {
-    render: renderPins,
-    click: clickPins
+    render: renderPins
   };
 })();

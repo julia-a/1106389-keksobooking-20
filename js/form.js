@@ -171,7 +171,11 @@
   });
 
   // Перевод страницы в неактивное состояние при клике на кнопку формы - "Очистить"
-  resetButton.addEventListener('click', window.main.setInactiveState);
+  // Отменяет действие кнопки reset по-умолчанию и вызывает функцию деактивации страницы
+  resetButton.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    window.main.setInactiveState();
+  });
 
   window.form = {
     onRoomsAndGuestsChange: onRoomsAndGuestsChange

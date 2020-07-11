@@ -100,6 +100,7 @@
   };
 
   window.card = {
+    removePopup: removePopup,
     renderMapPopup: renderMapPopup
   };
 })();
