@@ -138,7 +138,6 @@
   });
 
   window.main = {
-    ADVERTS: ADVERTS,
     deletePins: deletePins,
     setInactiveState: setInactiveState
   };
