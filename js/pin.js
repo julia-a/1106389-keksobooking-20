@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var PINS_LIMIT = 5;
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var pinsContainer = document.querySelector('.map__pins');
 
@@ -15,7 +16,7 @@
 
   var renderPins = function (advertsArr) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < Math.min(advertsArr.length, 5); i++) {
+    for (var i = 0; i < Math.min(advertsArr.length, PINS_LIMIT); i++) {
       fragment.appendChild(createPin(advertsArr[i], i));
     }
     pinsContainer.appendChild(fragment);

@@ -10,7 +10,7 @@
   var MAP_RIGHT = 1200 - HALF_PIN_WIDTH;
   var MAP_BOTTOM = 1200 - 630 - PIN_HEIGHT;
   var MAP_LEFT = 0 - HALF_PIN_WIDTH;
-  var ADVERTS = [];
+  var advertsData = [];
   var form = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var pins = document.querySelector('.map__pins');
@@ -24,8 +24,8 @@
   window.data.toggleDisabled(formFilters, true);
 
   // Функция активации страницы
-  var setActiveState = function () {
-    window.pin.render(ADVERTS);
+  var onActivatePage = function () {
+    window.pin.render(advertsData);
     map.classList.remove('map--faded');
     window.data.toggleDisabled(formFieldsets, false);
     window.data.toggleDisabled(formFilters, false);
@@ -35,7 +35,8 @@
   };
 
   var onLoadSuccess = function (arrData) {
-    ADVERTS = arrData;
+    advertsData = arrData;
+    window.main.advertsData = arrData;
   };
 
   window.backend.load(onLoadSuccess, window.backend.onDataError);
@@ -43,14 +44,14 @@
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === window.data.keyMouseLeft) {
-      setActiveState();
+      onActivatePage();
     }
   });
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.key === window.data.enter) {
-      setActiveState();
+      onActivatePage();
     }
   });
 
@@ -59,20 +60,20 @@
     var numPin = target.parentElement.dataset.numPin;
 
     if (numPin) {
-      window.card.renderMapPopup(ADVERTS[numPin]);
+      window.card.renderMapPopup(advertsData[numPin]);
     }
   });
 
   // Функция удаления пинов из разметки (за исключением главной метки)
   var deletePins = function () {
-    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    pins.forEach(function (pin) {
+    var pinsItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    pinsItems.forEach(function (pin) {
       pin.remove();
     });
   };
 
   // Функция для перевода страницы в неактивное состояние
-  var setInactiveState = function () {
+  var onDeactivatePage = function () {
     deletePins(); // Удаляет пины
     window.card.removePopup(); // Удаляет карточки объявлений
     form.reset(); // Очищает данные формы
@@ -139,6 +140,6 @@
 
   window.main = {
     deletePins: deletePins,
-    setInactiveState: setInactiveState
+    onDeactivatePage: onDeactivatePage
   };
 })();

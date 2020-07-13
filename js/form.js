@@ -25,7 +25,7 @@
     },
     palace: {
       value: 10000,
-      value: 10000,
+      min: 10000,
       max: 1000000
     }
   };
@@ -83,7 +83,6 @@
     switch (offerTypeOfHousing.value) {
       case 'bungalo':
         offerPriceForNight.setAttribute('placeholder', prices.bungalo.value);
-        debugger
         offerPriceForNight.setAttribute('min', prices.bungalo.min);
         offerPriceForNight.setAttribute('max', prices.bungalo.max);
         break;
@@ -174,7 +173,7 @@
   // Отменяет действие кнопки reset по-умолчанию и вызывает функцию деактивации страницы
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    window.main.setInactiveState();
+    window.main.onDeactivatePage();
   });
 
   window.form = {
