@@ -24,7 +24,7 @@
   window.data.toggleDisabled(formFilters, true);
 
   // Функция активации страницы
-  var onActivatePage = function () {
+  var activatePage = function () {
     window.pin.render(advertsData);
     map.classList.remove('map--faded');
     window.data.toggleDisabled(formFieldsets, false);
@@ -34,9 +34,9 @@
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };
 
-  var onLoadSuccess = function (arrData) {
-    advertsData = arrData;
-    window.main.advertsData = arrData;
+  var onLoadSuccess = function (advertsArr) {
+    advertsData = advertsArr;
+    window.main.advertsData = advertsArr;
   };
 
   window.backend.load(onLoadSuccess, window.backend.onDataError);
@@ -44,14 +44,18 @@
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.which === window.data.keyMouseLeft) {
-      onActivatePage();
+      onMainPinClick();
     }
   });
+
+  var onMainPinClick = function () {
+    activatePage();
+  };
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.key === window.data.enter) {
-      onActivatePage();
+      onMainPinClick();
     }
   });
 
@@ -73,7 +77,7 @@
   };
 
   // Функция для перевода страницы в неактивное состояние
-  var onDeactivatePage = function () {
+  var deactivatePage = function () {
     deletePins(); // Удаляет пины
     window.card.removePopup(); // Удаляет карточки объявлений
     form.reset(); // Очищает данные формы
@@ -86,6 +90,10 @@
     window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
     window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму
+  };
+
+  var onFormUpload = function () {
+    deactivatePage();
   };
 
   // Функция, реализующая передвижение главной метки (mainPin) по карте
@@ -140,6 +148,6 @@
 
   window.main = {
     deletePins: deletePins,
-    onDeactivatePage: onDeactivatePage
+    onFormUpload: onFormUpload
   };
 })();

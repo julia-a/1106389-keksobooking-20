@@ -50,7 +50,7 @@
   // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
   var onFormUpload = function () {
     onSuccess();
-    window.main.onDeactivatePage();
+    window.main.onFormUpload();
   };
 
   var onSuccess = function () {

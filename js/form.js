@@ -173,7 +173,7 @@
   // Отменяет действие кнопки reset по-умолчанию и вызывает функцию деактивации страницы
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    window.main.onDeactivatePage();
+    window.main.onFormUpload();
   });
 
   window.form = {
