@@ -62,6 +62,7 @@
   pins.addEventListener('click', function (evt) {
     var target = evt.target;
     var numPin = target.parentElement.dataset.numPin;
+    console.log(numPin);
 
     if (numPin) {
       window.card.renderMapPopup(advertsData[numPin]);

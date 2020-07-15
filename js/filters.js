@@ -54,12 +54,15 @@
   };
 
   var onFilterChange = window.debounce(function () {
-    var adverts = window.main.advertsData.slice(0).filter(function (advert) {
+    var adverts = window.main.advertsData.slice();
+    console.log(adverts);
+    adverts = adverts.filter(function (advert) {
       return getHousingType(advert) && getHousingPrice(advert) && getHousingRooms(advert) && getHousingGuests(advert) && getHousingFeatures(advert);
     });
     window.card.removePopup();
     window.main.deletePins();
     window.pin.render(adverts);
+    console.log(adverts);
   });
 
   mapFilters.addEventListener('change', onFilterChange);
