@@ -8,38 +8,49 @@
   var HALF_PIN_WIDTH = PIN_WIDTH / 2;
   var MAP_TOP = 130 - PIN_HEIGHT;
   var MAP_RIGHT = 1200 - HALF_PIN_WIDTH;
-  var MAP_BOTTOM = 1200 - 630 - PIN_HEIGHT;
+  var MAP_BOTTOM = 1260 - 630 - PIN_HEIGHT;
   var MAP_LEFT = 0 - HALF_PIN_WIDTH;
   var advertsData = [];
   var form = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
-  var pins = document.querySelector('.map__pins');
   var mainPin = document.querySelector('.map__pin--main');
   var formFieldsets = form.querySelectorAll('fieldset');
   var formFilters = document.querySelectorAll('[name^=housing-]');
   var addressInput = form.querySelector('#address');
+  var mapFilters = document.querySelector('.map__filters');
+  var resetButton = form.querySelector('.ad-form__reset');
 
   addressInput.value = UNACTIVE_PIN_COORDS;
   window.data.toggleDisabled(formFieldsets, true);
   window.data.toggleDisabled(formFilters, true);
 
+  var onMapFiltersChange = function () {
+    window.filter.filterMapAds(advertsData);
+  };
+
   // Функция активации страницы
   var activatePage = function () {
-    window.pin.render(advertsData);
     map.classList.remove('map--faded');
     window.data.toggleDisabled(formFieldsets, false);
     window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
     window.form.onRoomsAndGuestsChange(); // Синхронизирует поля кол-во комнат/кол-во мест
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
+    window.backend.load(onLoadSuccess, window.backend.onDataError);
+    mapFilters.addEventListener('change', window.debounce(onMapFiltersChange));
+    mainPin.removeEventListener(onMainPinClick);
   };
 
   var onLoadSuccess = function (adverts) {
     advertsData = adverts;
-    window.main.advertsData = adverts;
+    window.pin.render(advertsData);
   };
 
-  window.backend.load(onLoadSuccess, window.backend.onDataError);
+  var onMainPinClick = function () {
+    if (map.classList.contains('map--faded')) {
+      activatePage();
+    }
+  };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
   mainPin.addEventListener('mousedown', function (evt) {
@@ -48,38 +59,10 @@
     }
   });
 
-  var onMainPinClick = function () {
-    activatePage();
-  };
-
   // Обработчик для активации страницы с клавиатуры, клавишей enter
-  mainPin.addEventListener('keydown', onMainPinClick, function (evt) {
-    if (evt.key === window.data.enter)
-  });
-
-//////////////////////////////////////////////
-  var mainPin;
-
-  var activatePage = function () {
-    mainPin.removeEventListener(onMainPinClick);
-
-    // ...
-  };
-
-  var onMainPinClick = function () {
-    activatePage();
-  };
-
-  mainPin.addEventListener('mousedown', onMainPinClick)
-//////////////////////////////////////////////
-
-  pins.addEventListener('click', function (evt) {
-    var target = evt.target;
-    var numPin = target.parentElement.dataset.numPin;
-    console.log(numPin);
-
-    if (numPin) {
-      window.card.renderMapPopup(advertsData[numPin]);
+  mainPin.addEventListener('keydown', function (evt) {
+    if (evt.key === window.data.enter) {
+      onMainPinClick();
     }
   });
 
@@ -96,6 +79,7 @@
     deletePins(); // Удаляет пины
     window.card.removePopup(); // Удаляет карточки объявлений
     form.reset(); // Очищает данные формы
+    mapFilters.reset();
     addressInput.value = UNACTIVE_PIN_COORDS;
     mainPin.style.left = MAIN_PIN_LEFT;
     mainPin.style.top = MAIN_PIN_TOP;
@@ -105,9 +89,18 @@
     window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
     window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму
+    form.removeEventListener(onFormUpload);
+    resetButton.removeEventListener(onFormReset);
   };
 
+  // Функция "успешного поведения" при отправке данных из формы на сервер
+  // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
   var onFormUpload = function () {
+    window.backend.onSuccess();
+    deactivatePage();
+  };
+
+  var onFormReset = function () {
     deactivatePage();
   };
 
@@ -163,6 +156,10 @@
 
   window.main = {
     deletePins: deletePins,
-    onFormUpload: onFormUpload
+    deactivatePage: deactivatePage,
+    onFormUpload: onFormUpload,
+    onFormReset: onFormReset,
+    onLoadSuccess: onLoadSuccess,
+    onMapFiltersChange: onMapFiltersChange
   };
 })();

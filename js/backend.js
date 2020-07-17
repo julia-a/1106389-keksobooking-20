@@ -46,13 +46,6 @@
     xhr.send(data);
   };
 
-  // Функция "успешного поведения" при отправке данных из формы на сервер
-  // Показывает сообщение об успешной отправке, а затем запускает функцию деактивации страницы
-  var onFormUpload = function () {
-    onSuccess();
-    window.main.onFormUpload();
-  };
-
   var onSuccess = function () {
     var removeSuccessMessage = function () {
       successTemplate.remove();
@@ -107,7 +100,7 @@
   window.backend = {
     load: load,
     upload: upload,
-    onFormUpload: onFormUpload,
+    onSuccess: onSuccess,
     onDataError: onDataError
   };
 })();

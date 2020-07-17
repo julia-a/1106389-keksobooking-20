@@ -14,7 +14,7 @@
 
     var filterRules = {
       'housing-type': 'type',
-      'housing-rooms': 'room',
+      'housing-rooms': 'rooms',
       'housing-guests': 'guests'
     };
 
@@ -53,7 +53,7 @@
           }
         }
       });
-    };
+    }
 
     if (featureFilters !== null) {
       featureFilters.forEach(function (item) {
@@ -63,17 +63,16 @@
 
     if (filteredOffers.length) {
       window.pin.render(filteredOffers);
-      console.log(filteredOffers);
-    };
+    }
   };
 
-  var onFilterChange = window.debounce(function () {
-    var offers = window.main.advertsData;
-    console.log(offers);
+  var filterMapAds = function (offers) {
     window.card.removePopup();
     window.main.deletePins();
     updatePins(offers);
-  });
+  };
 
-  mapFilters.addEventListener('change', onFilterChange);
+  window.filter = {
+    filterMapAds: filterMapAds
+  };
 })();

@@ -166,14 +166,14 @@
   // через вызов дополнительных функций при успешной/неуспешной отправке
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.upload(new FormData(form), window.backend.onFormUpload, window.backend.onDataError);
+    window.backend.upload(new FormData(form), window.main.onFormUpload, window.backend.onDataError);
   });
 
   // Перевод страницы в неактивное состояние при клике на кнопку формы - "Очистить"
   // Отменяет действие кнопки reset по-умолчанию и вызывает функцию деактивации страницы
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
-    window.main.onFormUpload();
+    window.main.onFormReset();
   });
 
   window.form = {
