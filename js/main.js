@@ -34,9 +34,9 @@
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
   };
 
-  var onLoadSuccess = function (advertsArr) {
-    advertsData = advertsArr;
-    window.main.advertsData = advertsArr;
+  var onLoadSuccess = function (adverts) {
+    advertsData = adverts;
+    window.main.advertsData = adverts;
   };
 
   window.backend.load(onLoadSuccess, window.backend.onDataError);
@@ -53,11 +53,25 @@
   };
 
   // Обработчик для активации страницы с клавиатуры, клавишей enter
-  mainPin.addEventListener('keydown', function (evt) {
-    if (evt.key === window.data.enter) {
-      onMainPinClick();
-    }
+  mainPin.addEventListener('keydown', onMainPinClick, function (evt) {
+    if (evt.key === window.data.enter)
   });
+
+//////////////////////////////////////////////
+  var mainPin;
+
+  var activatePage = function () {
+    mainPin.removeEventListener(onMainPinClick);
+
+    // ...
+  };
+
+  var onMainPinClick = function () {
+    activatePage();
+  };
+
+  mainPin.addEventListener('mousedown', onMainPinClick)
+//////////////////////////////////////////////
 
   pins.addEventListener('click', function (evt) {
     var target = evt.target;
