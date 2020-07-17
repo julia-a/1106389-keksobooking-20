@@ -18,7 +18,6 @@
   var formFilters = document.querySelectorAll('[name^=housing-]');
   var addressInput = form.querySelector('#address');
   var mapFilters = document.querySelector('.map__filters');
-  var resetButton = form.querySelector('.ad-form__reset');
 
   addressInput.value = UNACTIVE_PIN_COORDS;
   window.data.toggleDisabled(formFieldsets, true);
@@ -34,11 +33,11 @@
     window.data.toggleDisabled(formFieldsets, false);
     window.data.toggleDisabled(formFilters, false);
     form.classList.remove('ad-form--disabled');
+    window.form.setPriceForHousingType();
     window.form.onRoomsAndGuestsChange(); // Синхронизирует поля кол-во комнат/кол-во мест
     window.photo.changeImages(); // Запускает обработчики событий изменения аватара и добавления фотографий объекта
     window.backend.load(onLoadSuccess, window.backend.onDataError);
     mapFilters.addEventListener('change', window.debounce(onMapFiltersChange));
-    mainPin.removeEventListener(onMainPinClick);
   };
 
   var onLoadSuccess = function (adverts) {
@@ -89,8 +88,6 @@
     window.photo.cleanImages(); // Сбрасывает аватар и фотографии объекта на состояние по умолчанию
     window.photo.removeImages(); // Удаляет обработчики событий изменения аватара и добавления фотографий объекта
     form.classList.add('ad-form--disabled'); // Деактивирует форму
-    form.removeEventListener(onFormUpload);
-    resetButton.removeEventListener(onFormReset);
   };
 
   // Функция "успешного поведения" при отправке данных из формы на сервер

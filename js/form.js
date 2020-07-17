@@ -78,8 +78,7 @@
     onCheckInAndOutChange(offerCheckOut, offerCheckIn);
   });
 
-  // Синхронизация полей «Тип жилья» и «Цена за ночь»
-  var onTypeOfHousingChange = function () {
+  var setPriceForHousingType = function () {
     switch (offerTypeOfHousing.value) {
       case 'bungalo':
         offerPriceForNight.setAttribute('placeholder', prices.bungalo.value);
@@ -103,8 +102,7 @@
         break;
     }
   };
-  offerTypeOfHousing.addEventListener('change', onTypeOfHousingChange);
-
+  offerTypeOfHousing.addEventListener('change', setPriceForHousingType);
 
   // Отдельная проверка значения указанного в поле «Цена за ночь»
   var onPriceInputChange = function (evt) {
@@ -177,7 +175,7 @@
   });
 
   window.form = {
+    setPriceForHousingType: setPriceForHousingType,
     onRoomsAndGuestsChange: onRoomsAndGuestsChange
   };
 })();
-
